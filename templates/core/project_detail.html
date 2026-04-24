@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="relative overflow-hidden border-b border-white/5 bg-muko-black px-6 py-24 md:px-20 lg:px-32">
+    <div class="absolute inset-0 opacity-30">
+        <div class="absolute left-0 top-0 h-72 w-72 rounded-full bg-muko-red/20 blur-3xl"></div>
+        <div class="absolute bottom-0 right-0 h-96 w-96 rounded-full bg-white/10 blur-3xl"></div>
+    </div>
+
+    <div class="relative mx-auto grid max-w-7xl gap-14 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+        <div>
+            <a href="{% url 'home' %}#work" class="inline-flex items-center gap-3 text-[10px] uppercase tracking-[0.35em] text-white/40 transition-colors hover:text-muko-red">
+                <i data-lucide="arrow-left" class="h-4 w-4"></i>
+                Back To Work
+            </a>
+            <p class="mt-10 text-sm font-semibold uppercase tracking-[0.35em] text-muko-red">{{ project.category }}</p>
+            <h1 class="mt-4 max-w-4xl font-bebas text-6xl leading-none tracking-tight text-white md:text-8xl">{{ project.title }}</h1>
+            <p class="mt-6 max-w-2xl text-lg leading-relaxed text-white/75 md:text-2xl">{{ project.headline }}</p>
+            <p class="mt-8 max-w-2xl text-base leading-relaxed text-white/55">{{ project.summary }}</p>
+
+            <div class="mt-10 flex flex-wrap gap-3">
+                {% for item in project.stack_list %}
+                <span class="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-white/50">{{ item }}</span>
+                {% endfor %}
+            </div>
+
+            <div class="mt-12 flex flex-wrap gap-4">
+                <a href="{{ whatsapp_contact_url }}" target="_blank" rel="noreferrer" class="inline-flex items-center gap-3 rounded-full border border-muko-red bg-muko-red px-6 py-3 text-xs font-semibold uppercase tracking-[0.25em] text-white transition-colors hover:bg-muko-red/80">
+                    Start A Project
+                    <i data-lucide="arrow-right" class="h-4 w-4"></i>
+                </a>
+                <a href="mailto:hello@muko.design?subject={{ project.title|urlencode }}" class="inline-flex items-center gap-3 rounded-full border border-white/10 px-6 py-3 text-xs font-semibold uppercase tracking-[0.25em] text-white/80 transition-colors hover:border-white hover:text-white">
+                    Request Full Deck
+                    <i data-lucide="send" class="h-4 w-4"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="relative overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 p-4 shadow-2xl shadow-black/40">
+            <img src="{% static project.hero_image %}" alt="{{ project.title }}" class="aspect-[4/3] w-full rounded-[1.5rem] object-cover">
+        </div>
+    </div>
+</section>
+
+<section class="bg-muko-black px-6 py-20 md:px-20 lg:px-32">
+    <div class="mx-auto grid max-w-7xl gap-6 md:grid-cols-3">
+        <article class="rounded-[1.75rem] border border-white/10 bg-white/5 p-8">
+            <p class="text-[10px] uppercase tracking-[0.35em] text-white/35">Challenge</p>
+            <p class="mt-5 text-base leading-relaxed text-white/75">{{ project.challenge }}</p>
+        </article>
+        <article class="rounded-[1.75rem] border border-white/10 bg-white/5 p-8">
+            <p class="text-[10px] uppercase tracking-[0.35em] text-white/35">Approach</p>
+            <p class="mt-5 text-base leading-relaxed text-white/75">{{ project.approach }}</p>
+        </article>
+        <article class="rounded-[1.75rem] border border-white/10 bg-white/5 p-8">
+            <p class="text-[10px] uppercase tracking-[0.35em] text-white/35">Outcome</p>
+            <p class="mt-5 text-base leading-relaxed text-white/75">{{ project.outcome }}</p>
+        </article>
+    </div>
+</section>
+
+<section class="border-t border-white/5 bg-muko-black px-6 py-20 md:px-20 lg:px-32">
+    <div class="mx-auto max-w-7xl">
+        <div class="flex flex-col gap-10 lg:flex-row lg:items-start lg:justify-between">
+            <div class="max-w-2xl">
+                <p class="text-sm font-semibold uppercase tracking-[0.35em] text-muko-red">Project Scope</p>
+                <h2 class="mt-4 font-bebas text-5xl tracking-tight text-white md:text-6xl">What was delivered</h2>
+                <p class="mt-6 text-base leading-relaxed text-white/55">Each case study combines product thinking, visual direction, and implementation awareness so the final outcome is not just attractive, but practical to build and scale.</p>
+            </div>
+            <div class="grid gap-4 sm:grid-cols-2">
+                {% for service in project.services_list %}
+                <div class="rounded-2xl border border-white/10 bg-white/5 px-6 py-5 text-sm text-white/75">{{ service }}</div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="mt-16 rounded-[2rem] border border-white/10 bg-gradient-to-r from-white/5 to-muko-red/10 p-8 md:p-12">
+            <div class="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
+                <div class="max-w-2xl">
+                    <p class="text-[10px] uppercase tracking-[0.35em] text-white/35">Next move</p>
+                    <h3 class="mt-4 font-bebas text-4xl tracking-tight text-white md:text-5xl">Want a similar outcome for your product or brand?</h3>
+                    <p class="mt-4 text-base leading-relaxed text-white/65">If this direction matches the level of polish you need, the next step is a short discovery call and a sharper project brief.</p>
+                </div>
+                <div class="flex flex-wrap gap-4">
+                    <a href="{{ whatsapp_contact_url }}" target="_blank" rel="noreferrer" class="inline-flex items-center gap-3 rounded-full bg-white px-6 py-3 text-xs font-semibold uppercase tracking-[0.25em] text-black transition-colors hover:bg-muko-red hover:text-white">
+                        Book A Call
+                        <i data-lucide="phone-call" class="h-4 w-4"></i>
+                    </a>
+                    <a href="{% url 'home' %}#work" class="inline-flex items-center gap-3 rounded-full border border-white/15 px-6 py-3 text-xs font-semibold uppercase tracking-[0.25em] text-white/75 transition-colors hover:border-white hover:text-white">
+                        More Work
+                        <i data-lucide="layers-3" class="h-4 w-4"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

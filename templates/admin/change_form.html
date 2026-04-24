@@ -1,0 +1,27 @@
+{% extends "admin/change_form.html" %}
+{% load i18n admin_urls %}
+
+{% block content %}
+<div class="muko-admin-toolbar">
+    <div class="muko-admin-toolbar-copy">
+        <span class="muko-admin-kicker">Editor</span>
+        <h1>
+            {% if add %}
+                {% blocktranslate with name=opts.verbose_name %}Add {{ name }}{% endblocktranslate %}
+            {% else %}
+                {{ original|truncatewords:"12" }}
+            {% endif %}
+        </h1>
+        <p>Use this editor to update public-facing content while keeping structure, order, and publishing controls aligned.</p>
+    </div>
+    <div class="muko-admin-toolbar-actions">
+        {% if not add and has_view_permission %}
+        <a class="muko-admin-link" href="{% url opts|admin_urlname:'changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a>
+        {% endif %}
+        <a class="muko-admin-link" href="{% url 'admin:index' %}">{% translate 'Dashboard' %}</a>
+    </div>
+</div>
+<div class="muko-admin-surface">
+    {{ block.super }}
+</div>
+{% endblock %}

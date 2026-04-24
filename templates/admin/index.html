@@ -1,0 +1,214 @@
+{% extends "admin/index.html" %}
+{% load i18n log admin_extras %}
+
+{% block extrahead %}{{ block.super }}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+{% endblock %}
+
+{% block content %}
+{% admin_analytics_data as d %}
+<div class="muko-dash">
+
+    {# ── KPI bar ──────────────────────────────────────────── #}
+    <div class="muko-kpi-bar">
+        <div class="muko-kpi">
+            <span class="muko-kpi-label">Published Projects</span>
+            <strong class="muko-kpi-value">{{ d.published_projects }}</strong>
+            <span class="muko-kpi-sub">of {{ d.total_projects }} total</span>
+        </div>
+        <div class="muko-kpi">
+            <span class="muko-kpi-label">Live Shop Items</span>
+            <strong class="muko-kpi-value">{{ d.published_shop }}</strong>
+            <span class="muko-kpi-sub">of {{ d.total_shop }} total</span>
+        </div>
+        <div class="muko-kpi">
+            <span class="muko-kpi-label">Drafts</span>
+            <strong class="muko-kpi-value">{{ d.draft_projects|add:d.draft_shop }}</strong>
+            <span class="muko-kpi-sub">projects + shop items</span>
+        </div>
+        <div class="muko-kpi">
+            <span class="muko-kpi-label">Submissions</span>
+            <strong class="muko-kpi-value">{{ d.submissions }}</strong>
+            <span class="muko-kpi-sub">historical inquiries</span>
+        </div>
+    </div>
+
+    {# ── Charts ───────────────────────────────────────────── #}
+    <div class="muko-chart-row">
+        <div class="muko-panel muko-chart-panel">
+            <div class="muko-panel-head">
+                <div>
+                    <h2 class="muko-panel-h2">Admin Activity</h2>
+                    <p class="muko-panel-sub">Actions logged over the last 30 days</p>
+                </div>
+            </div>
+            <div class="muko-chart-wrap">
+                <canvas id="mukoActivityChart"></canvas>
+            </div>
+        </div>
+        <div class="muko-panel muko-chart-panel">
+            <div class="muko-panel-head">
+                <div>
+                    <h2 class="muko-panel-h2">Content Status</h2>
+                    <p class="muko-panel-sub">Published vs draft breakdown</p>
+                </div>
+            </div>
+            <div class="muko-chart-wrap muko-chart-wrap--donut">
+                <canvas id="mukoDonutChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    {# ── Quick Actions + Activity log ─────────────────────── #}
+    <div class="muko-lower-row">
+        <div class="muko-panel muko-actions-panel">
+            <h2 class="muko-panel-h2">Quick Actions</h2>
+            <div class="muko-qa-list">
+                <a class="muko-qa" href="{% url 'admin:core_featuredproject_changelist' %}">
+                    <span class="muko-qa-label">Featured Projects</span>
+                    <span class="muko-qa-badge">{{ d.total_projects }}</span>
+                </a>
+                <a class="muko-qa" href="{% url 'admin:core_shopitem_changelist' %}">
+                    <span class="muko-qa-label">Shop Items</span>
+                    <span class="muko-qa-badge">{{ d.total_shop }}</span>
+                </a>
+                <a class="muko-qa" href="{% url 'admin:core_shopsectionsettings_changelist' %}">
+                    <span class="muko-qa-label">Shop Section Settings</span>
+                    <span class="muko-qa-badge">{{ d.shop_sections }}</span>
+                </a>
+                <a class="muko-qa" href="{% url 'admin:core_contactsubmission_changelist' %}">
+                    <span class="muko-qa-label">Contact Submissions</span>
+                    <span class="muko-qa-badge">{{ d.submissions }}</span>
+                </a>
+            </div>
+            <div class="muko-qa-adds">
+                <a class="muko-qa-add" href="{% url 'admin:core_featuredproject_add' %}">+ Add Project</a>
+                <a class="muko-qa-add" href="{% url 'admin:core_shopitem_add' %}">+ Add Shop Item</a>
+            </div>
+        </div>
+
+        <div class="muko-panel muko-log-panel">
+            <h2 class="muko-panel-h2">Recent Activity</h2>
+            {% get_admin_log 10 as admin_log for_user user %}
+            {% if admin_log %}
+            <ul class="muko-log">
+                {% for entry in admin_log %}
+                <li class="muko-log-item">
+                    <span class="muko-log-flag {% if entry.is_addition %}flag-add{% elif entry.is_change %}flag-edit{% else %}flag-del{% endif %}">
+                        {% if entry.is_addition %}+{% elif entry.is_change %}~{% else %}−{% endif %}
+                    </span>
+                    <div class="muko-log-body">
+                        {% if entry.is_deletion or not entry.get_admin_url %}
+                            <span class="muko-log-name">{{ entry.object_repr }}</span>
+                        {% else %}
+                            <a class="muko-log-name" href="{{ entry.get_admin_url }}">{{ entry.object_repr }}</a>
+                        {% endif %}
+                        <span class="muko-log-type">
+                            {% if entry.content_type %}{% filter capfirst %}{{ entry.content_type.name }}{% endfilter %}{% endif %}
+                        </span>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p class="muko-empty">No recent activity yet.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+(function () {
+    'use strict';
+    const RED       = '#ff3131';
+    const RED_ALPHA = 'rgba(255,49,49,0.10)';
+    const GRID      = 'rgba(255,255,255,0.05)';
+    const TICK      = 'rgba(255,255,255,0.38)';
+
+    const labels   = {{ d.chart_labels|safe }};
+    const activity = {{ d.chart_activity|safe }};
+    const dLabels  = {{ d.donut_labels|safe }};
+    const dData    = {{ d.donut_data|safe }};
+
+    /* ── Activity line chart ─────────────────────────────── */
+    const actEl = document.getElementById('mukoActivityChart');
+    if (actEl) {
+        new Chart(actEl, {
+            type: 'line',
+            data: {
+                labels,
+                datasets: [{
+                    label: 'Actions',
+                    data: activity,
+                    fill: true,
+                    borderColor: RED,
+                    backgroundColor: RED_ALPHA,
+                    borderWidth: 2,
+                    pointRadius: 3,
+                    pointBackgroundColor: RED,
+                    tension: 0.4,
+                }],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: {
+                        ticks: { color: TICK, maxTicksLimit: 8, font: { size: 11 } },
+                        grid:  { color: GRID },
+                        border: { color: GRID },
+                    },
+                    y: {
+                        beginAtZero: true,
+                        ticks: { color: TICK, stepSize: 1, font: { size: 11 } },
+                        grid:  { color: GRID },
+                        border: { color: GRID },
+                    },
+                },
+            },
+        });
+    }
+
+    /* ── Content donut chart ─────────────────────────────── */
+    const donEl = document.getElementById('mukoDonutChart');
+    if (donEl) {
+        new Chart(donEl, {
+            type: 'doughnut',
+            data: {
+                labels: dLabels,
+                datasets: [{
+                    data: dData,
+                    backgroundColor: [
+                        RED,
+                        'rgba(255,49,49,0.28)',
+                        'rgba(255,255,255,0.55)',
+                        'rgba(255,255,255,0.13)',
+                    ],
+                    borderWidth: 0,
+                    hoverOffset: 8,
+                }],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '68%',
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: 'rgba(255,255,255,0.65)',
+                            padding: 16,
+                            font: { size: 12 },
+                            boxWidth: 12,
+                        },
+                    },
+                },
+            },
+        });
+    }
+})();
+</script>
+{% endblock %}
+
+{% block sidebar %}{% endblock %}

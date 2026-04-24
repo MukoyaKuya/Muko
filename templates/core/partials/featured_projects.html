@@ -1,0 +1,43 @@
+{% load static %}
+<div id="featured-projects-panel">
+    <div class="flex gap-2 md:gap-4 overflow-x-auto pb-2 md:pb-0">
+        {% for filter_option in project_filters %}
+        <a
+            href="{% url 'home' %}{% if filter_option.value != 'all' %}?category={{ filter_option.value }}{% endif %}#work"
+            hx-get="{% url 'home' %}{% if filter_option.value != 'all' %}?category={{ filter_option.value }}{% endif %}"
+            hx-target="#featured-projects-panel"
+            hx-swap="outerHTML"
+            hx-push-url="true"
+            class="whitespace-nowrap px-6 py-2 border rounded-full text-[10px] tracking-widest uppercase transition-colors {% if selected_project_filter == filter_option.value %}border-white/10 text-muko-red font-bold{% else %}border-white/5 text-white/40 hover:text-white{% endif %}"
+        >{{ filter_option.label }}</a>
+        {% endfor %}
+    </div>
+
+    <div class="mt-12 grid grid-cols-1 gap-12 md:grid-cols-2">
+        {% for project in featured_projects %}
+        <div class="work-item group cursor-pointer">
+            <div class="relative mb-6 aspect-[4/3] overflow-hidden rounded-2xl bg-white/5">
+                <img src="{% static project.hero_image %}" alt="{{ project.title }}" class="h-full w-full object-cover grayscale transition-all duration-700 group-hover:grayscale-0 group-hover:scale-105">
+                <div class="absolute inset-0 bg-muko-black/20 transition-colors group-hover:bg-transparent"></div>
+            </div>
+            <div class="flex items-start justify-between gap-4">
+                <div>
+                    <h4 class="mb-2 text-2xl font-bebas text-white">{{ project.title }}</h4>
+                    <p class="text-sm text-white/40">{{ project.category }}</p>
+                    <p class="mt-3 max-w-md text-sm leading-relaxed text-white/55">{{ project.card_summary }}</p>
+                </div>
+                <a href="{% url 'project_detail' project.slug %}" class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-white/10 transition-all duration-300 group-hover:border-muko-red group-hover:bg-muko-red" aria-label="Open the {{ project.title }} case study">
+                    <svg viewBox="0 0 24 24" aria-hidden="true" class="h-5 w-5 -translate-x-0.5 translate-y-0.5 scale-90 stroke-white opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:translate-y-0 group-hover:scale-100 group-hover:opacity-100" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M7 17 17 7"></path>
+                        <path d="M8 7h9v9"></path>
+                    </svg>
+                </a>
+            </div>
+        </div>
+        {% empty %}
+        <div class="md:col-span-2 rounded-3xl border border-dashed border-white/10 bg-white/5 p-10 text-center text-white/45">
+            No featured projects are published yet. Add them in the admin to populate this section.
+        </div>
+        {% endfor %}
+    </div>
+</div>

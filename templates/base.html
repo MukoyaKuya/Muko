@@ -1,0 +1,333 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muko | Digital Experience Designer</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Dancing+Script:wght@700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'muko-black': '#000000',
+                        'muko-red': '#FF3131',
+                        'muko-white': '#FFFFFF',
+                    },
+                    fontFamily: {
+                        'bebas': ['"Bebas Neue"', 'sans-serif'],
+                        'script': ['"Dancing Script"', 'cursive'],
+                        'sans': ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- HTMX & jQuery -->
+    <script src="https://unpkg.com/htmx.org@2.0.0"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    
+    <!-- GSAP for Animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+    <style>
+        body {
+            background-color: #000000;
+            color: #FFFFFF;
+            overflow-x: hidden;
+        }
+        
+        .sidebar-icon {
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar-icon:hover {
+            color: #FF3131;
+            transform: scale(1.1);
+        }
+        
+        .active-link {
+            color: #FF3131;
+        }
+
+        /* Sidebar Tooltip */
+        .sidebar-tooltip {
+            position: absolute;
+            left: 100%;
+            margin-left: 1.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 49, 49, 0.9);
+            color: white;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            border-radius: 4px;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateX(-10px);
+            transition: all 0.3s ease;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        .sidebar-icon:hover .sidebar-tooltip {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(0);
+        }
+
+        /* Tooltip Arrow */
+        .sidebar-tooltip::before {
+            content: '';
+            position: absolute;
+            left: -4px;
+            top: 50%;
+            transform: translateY(-50%);
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
+            border-right: 5px solid rgba(255, 49, 49, 0.9);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #000000;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #FF3131;
+            border-radius: 10px;
+        }
+
+        .glass-nav {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+        }
+
+        /* ── Sidebar icon hover & active states ─────────── */
+        .sidebar-icon {
+            transition: color 0.2s ease;
+        }
+        .sidebar-icon:hover {
+            color: #FF3131;
+        }
+        .sidebar-icon i,
+        .sidebar-icon svg {
+            transition: transform 0.2s ease, filter 0.2s ease;
+        }
+        .sidebar-icon:hover i,
+        .sidebar-icon:hover svg {
+            transform: scale(1.15);
+        }
+        .sidebar-icon.active-link {
+            color: #FF3131;
+        }
+        .sidebar-icon.active-link i,
+        .sidebar-icon.active-link svg {
+            filter: drop-shadow(0 0 7px rgba(255,49,49,0.7));
+        }
+        /* Social icons get a rotation on hover */
+        .sidebar-social:hover i,
+        .sidebar-social:hover svg {
+            transform: scale(1.15) rotate(8deg);
+        }
+
+        /* ── Custom cursor (fine-pointer / desktop only) ── */
+        @media (pointer: fine) {
+            #cursor-dot, #cursor-ring { display: block; }
+        }
+        #cursor-dot {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 8px; height: 8px;
+            background: #FF3131;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0;
+            transform: translate(-50%, -50%);
+            transition: width 0.15s, height 0.15s, opacity 0.25s;
+        }
+        #cursor-ring {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 32px; height: 32px;
+            border: 1.5px solid rgba(255,49,49,0.5);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            opacity: 0;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s ease-out, height 0.3s ease-out, border-color 0.3s ease, opacity 0.25s;
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body id="top" class="font-sans">
+
+    <!-- Custom cursor (desktop / fine-pointer only — hidden on touch via CSS) -->
+    <div id="cursor-dot" aria-hidden="true"></div>
+    <div id="cursor-ring" aria-hidden="true"></div>
+
+    <!-- Sidebar Toggle Button (Always Visible) -->
+    <button id="menu-toggle" class="fixed top-6 left-0 w-20 flex justify-center z-[60] text-muko-white hover:text-muko-red transition-colors focus:outline-none">
+        <i data-lucide="menu" class="w-8 h-8"></i>
+    </button>
+
+    <!-- Sidebar Navigation (Desktop) -->
+    <nav id="sidebar" class="hidden md:flex fixed left-0 top-0 h-screen w-20 flex-col items-center py-16 z-50 border-r border-white/10 bg-muko-black transition-transform duration-300 transform">
+        <!-- Main Links -->
+        <div class="flex-1 flex flex-col gap-8 text-white/40 pt-8">
+            <a href="#top" class="sidebar-icon active-link relative group flex items-center justify-center">
+                <i data-lucide="home" class="w-6 h-6"></i>
+                <span class="sidebar-tooltip">Home</span>
+            </a>
+            <a href="#profile" class="sidebar-icon relative group flex items-center justify-center">
+                <i data-lucide="user" class="w-6 h-6"></i>
+                <span class="sidebar-tooltip">Profile</span>
+            </a>
+            <a href="#skills" class="sidebar-icon relative group flex items-center justify-center">
+                <i data-lucide="layers" class="w-6 h-6"></i>
+                <span class="sidebar-tooltip">Skills</span>
+            </a>
+            <a href="#work" class="sidebar-icon relative group flex items-center justify-center">
+                <i data-lucide="briefcase" class="w-6 h-6"></i>
+                <span class="sidebar-tooltip">Portfolio</span>
+            </a>
+            <a href="#shop" class="sidebar-icon relative group flex items-center justify-center">
+                <i data-lucide="shopping-bag" class="w-6 h-6"></i>
+                <span class="sidebar-tooltip">Shop</span>
+            </a>
+            <a href="{{ whatsapp_contact_url }}" target="_blank" rel="noreferrer" class="sidebar-icon relative group flex items-center justify-center">
+                <svg viewBox="0 0 24 24" aria-hidden="true" class="h-6 w-6 fill-current"><path d="M19.05 4.91A9.82 9.82 0 0 0 12.03 2C6.6 2 2.16 6.42 2.16 11.86c0 1.74.45 3.43 1.3 4.92L2 22l5.39-1.41a9.83 9.83 0 0 0 4.64 1.18h.01c5.43 0 9.86-4.42 9.86-9.86a9.8 9.8 0 0 0-2.85-7Zm-7.02 15.2h-.01a8.15 8.15 0 0 1-4.15-1.13l-.3-.18-3.2.84.85-3.12-.2-.32a8.14 8.14 0 0 1-1.25-4.34c0-4.49 3.66-8.14 8.17-8.14 2.18 0 4.22.85 5.76 2.38a8.08 8.08 0 0 1 2.38 5.76c0 4.49-3.66 8.15-8.15 8.15Zm4.47-6.12c-.24-.12-1.4-.69-1.62-.76-.22-.08-.38-.12-.54.12-.16.24-.62.76-.76.92-.14.16-.28.18-.52.06-.24-.12-1.02-.37-1.94-1.18-.72-.64-1.2-1.42-1.34-1.66-.14-.24-.02-.37.1-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.3-.74-1.78-.2-.48-.4-.41-.54-.42h-.46c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2s.86 2.32.98 2.48c.12.16 1.68 2.56 4.06 3.59.57.24 1.02.38 1.37.48.58.18 1.1.16 1.52.1.46-.07 1.4-.57 1.6-1.12.2-.55.2-1.02.14-1.12-.06-.1-.22-.16-.46-.28Z"/></svg>
+                <span class="sidebar-tooltip">WhatsApp</span>
+            </a>
+
+            <!-- Social Links Integrated -->
+            <div class="pt-8 mt-8 border-t border-white/10 flex flex-col gap-8">
+                <a href="https://github.com/MukoyaKuya" target="_blank" rel="noreferrer" class="sidebar-icon sidebar-social relative group flex items-center justify-center" aria-label="Open GitHub profile">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
+                    <span class="sidebar-tooltip">GitHub</span>
+                </a>
+                <a href="https://www.linkedin.com/in/mukoya-kuya/" target="_blank" rel="noreferrer" class="sidebar-icon sidebar-social relative group flex items-center justify-center" aria-label="Open LinkedIn profile">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
+                    <span class="sidebar-tooltip">LinkedIn</span>
+                </a>
+                <a href="https://x.com/KuyaMukoya" target="_blank" rel="noreferrer" class="sidebar-icon sidebar-social relative group flex items-center justify-center" aria-label="Open X profile">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg>
+                    <span class="sidebar-tooltip">X</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="md:hidden fixed bottom-0 left-0 w-full bg-muko-black/90 backdrop-blur-lg border-t border-white/10 z-50 flex justify-around items-center py-4 px-2">
+        <a href="#top" class="text-muko-red flex flex-col items-center gap-1"><i data-lucide="home" class="w-5 h-5"></i><span class="text-[8px] uppercase">Home</span></a>
+        <a href="#skills" class="text-white/40 flex flex-col items-center gap-1"><i data-lucide="layers" class="w-5 h-5"></i><span class="text-[8px] uppercase">Skills</span></a>
+        <a href="#work" class="text-white/40 flex flex-col items-center gap-1"><i data-lucide="briefcase" class="w-5 h-5"></i><span class="text-[8px] uppercase">Work</span></a>
+        <a href="#shop" class="text-white/40 flex flex-col items-center gap-1"><i data-lucide="shopping-bag" class="w-5 h-5"></i><span class="text-[8px] uppercase">Shop</span></a>
+        <a href="{{ whatsapp_contact_url }}" target="_blank" rel="noreferrer" class="text-white/40 flex flex-col items-center gap-1"><svg viewBox="0 0 24 24" aria-hidden="true" class="h-5 w-5 fill-current"><path d="M19.05 4.91A9.82 9.82 0 0 0 12.03 2C6.6 2 2.16 6.42 2.16 11.86c0 1.74.45 3.43 1.3 4.92L2 22l5.39-1.41a9.83 9.83 0 0 0 4.64 1.18h.01c5.43 0 9.86-4.42 9.86-9.86a9.8 9.8 0 0 0-2.85-7Zm-7.02 15.2h-.01a8.15 8.15 0 0 1-4.15-1.13l-.3-.18-3.2.84.85-3.12-.2-.32a8.14 8.14 0 0 1-1.25-4.34c0-4.49 3.66-8.14 8.17-8.14 2.18 0 4.22.85 5.76 2.38a8.08 8.08 0 0 1 2.38 5.76c0 4.49-3.66 8.15-8.15 8.15Zm4.47-6.12c-.24-.12-1.4-.69-1.62-.76-.22-.08-.38-.12-.54.12-.16.24-.62.76-.76.92-.14.16-.28.18-.52.06-.24-.12-1.02-.37-1.94-1.18-.72-.64-1.2-1.42-1.34-1.66-.14-.24-.02-.37.1-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.3-.74-1.78-.2-.48-.4-.41-.54-.42h-.46c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2s.86 2.32.98 2.48c.12.16 1.68 2.56 4.06 3.59.57.24 1.02.38 1.37.48.58.18 1.1.16 1.52.1.46-.07 1.4-.57 1.6-1.12.2-.55.2-1.02.14-1.12-.06-.1-.22-.16-.46-.28Z"/></svg><span class="text-[8px] uppercase">WhatsApp</span></a>
+    </nav>
+
+    <main id="main-content" class="md:ml-20 pb-20 md:pb-0 transition-all duration-300">
+        {% block content %}{% endblock %}
+    </main>
+
+    <script>
+        lucide.createIcons();
+
+        // Sidebar Toggle Logic
+        const menuToggle = document.getElementById('menu-toggle');
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('main-content');
+        let sidebarVisible = true;
+
+        menuToggle.addEventListener('click', () => {
+            sidebarVisible = !sidebarVisible;
+            if (sidebarVisible) {
+                sidebar.classList.remove('-translate-x-full');
+                mainContent.classList.add('md:ml-20');
+                menuToggle.innerHTML = '<i data-lucide="x" class="w-8 h-8"></i>';
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                mainContent.classList.remove('md:ml-20');
+                menuToggle.innerHTML = '<i data-lucide="menu" class="w-8 h-8"></i>';
+            }
+            lucide.createIcons();
+        });
+
+        // Initialize with X if sidebar starts visible
+        if (sidebarVisible && window.innerWidth >= 768) {
+            menuToggle.innerHTML = '<i data-lucide="x" class="w-8 h-8"></i>';
+        }
+        
+        // Final icon creation trigger
+        window.addEventListener('load', () => {
+            lucide.createIcons();
+        });
+        
+        // Periodic check to ensure all icons rendered (useful for dynamic content)
+        setTimeout(() => lucide.createIcons(), 500);
+
+        // ── Custom cursor ────────────────────────────────────
+        const cursorDot  = document.getElementById('cursor-dot');
+        const cursorRing = document.getElementById('cursor-ring');
+        if (cursorDot && cursorRing) {
+            let cursorReady = false;
+            document.addEventListener('mousemove', (e) => {
+                cursorDot.style.left  = e.clientX + 'px';
+                cursorDot.style.top   = e.clientY + 'px';
+                cursorRing.style.left = e.clientX + 'px';
+                cursorRing.style.top  = e.clientY + 'px';
+                if (!cursorReady) {
+                    cursorReady = true;
+                    cursorDot.style.opacity  = '1';
+                    cursorRing.style.opacity = '1';
+                }
+            });
+            document.addEventListener('mouseleave', () => {
+                cursorDot.style.opacity  = '0';
+                cursorRing.style.opacity = '0';
+            });
+            document.addEventListener('mouseenter', () => {
+                if (cursorReady) {
+                    cursorDot.style.opacity  = '1';
+                    cursorRing.style.opacity = '1';
+                }
+            });
+            // Enlarge ring when hovering interactive elements
+            document.addEventListener('mouseover', (e) => {
+                if (e.target.closest('a, button')) {
+                    cursorRing.style.width       = '48px';
+                    cursorRing.style.height      = '48px';
+                    cursorRing.style.borderColor = 'rgba(255,49,49,0.85)';
+                } else {
+                    cursorRing.style.width       = '32px';
+                    cursorRing.style.height      = '32px';
+                    cursorRing.style.borderColor = 'rgba(255,49,49,0.5)';
+                }
+            });
+        }
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

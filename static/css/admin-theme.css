@@ -1,0 +1,1180 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+    --muko-black: #050505;
+    --muko-panel: #101010;
+    --muko-panel-strong: #171717;
+    --muko-border: rgba(255, 255, 255, 0.08);
+    --muko-border-strong: rgba(255, 49, 49, 0.35);
+    --muko-red: #ff3131;
+    --muko-red-deep: #d91f1f;
+    --muko-text: rgba(255, 255, 255, 0.92);
+    --muko-text-soft: rgba(255, 255, 255, 0.62);
+    --muko-text-faint: rgba(255, 255, 255, 0.4);
+    --primary: var(--muko-red);
+    --secondary: var(--muko-panel);
+    --accent: var(--muko-red);
+    --primary-fg: #fff;
+    --body-fg: var(--muko-text);
+    --body-bg: var(--muko-black);
+    --body-quiet-color: var(--muko-text-soft);
+    --body-medium-color: var(--muko-text-soft);
+    --hairline-color: var(--muko-border);
+    --border-color: var(--muko-border);
+    --header-color: #fff;
+    --header-branding-color: #fff;
+    --header-bg: rgba(10, 10, 10, 0.92);
+    --header-link-color: rgba(255, 255, 255, 0.72);
+    --breadcrumbs-fg: rgba(255, 255, 255, 0.7);
+    --breadcrumbs-link-fg: #fff;
+    --breadcrumbs-bg: transparent;
+    --link-fg: var(--muko-red);
+    --link-hover-color: #fff;
+    --link-selected-fg: #fff;
+    --button-fg: #fff;
+    --button-bg: var(--muko-red);
+    --button-hover-bg: var(--muko-red-deep);
+    --default-button-bg: var(--muko-red);
+    --default-button-hover-bg: var(--muko-red-deep);
+    --close-button-bg: #2a2a2a;
+    --close-button-hover-bg: #333;
+    --delete-button-bg: #842525;
+    --delete-button-hover-bg: #992d2d;
+    --message-success-bg: rgba(28, 159, 96, 0.14);
+    --message-warning-bg: rgba(255, 193, 7, 0.14);
+    --message-error-bg: rgba(255, 49, 49, 0.16);
+}
+
+html[data-theme="light"],
+html[data-theme="dark"] {
+    --primary: var(--muko-red);
+    --secondary: var(--muko-panel);
+}
+
+body,
+input,
+textarea,
+select,
+button {
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    background:
+        radial-gradient(circle at top right, rgba(255, 49, 49, 0.16), transparent 22%),
+        linear-gradient(180deg, #080808 0%, #040404 100%);
+    color: var(--muko-text);
+}
+
+a {
+    transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease, opacity 0.2s ease, transform 0.2s ease;
+}
+
+#header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 76px;
+    padding: 0 28px;
+    background: rgba(8, 8, 8, 0.95);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--muko-border);
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.32);
+}
+
+#branding h1,
+#site-name {
+    margin: 0;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    letter-spacing: 0.06em;
+    color: #fff;
+}
+
+#branding h1 a,
+#site-name a {
+    color: inherit;
+}
+
+#branding h1 a:hover,
+#site-name a:hover {
+    color: var(--muko-red);
+}
+
+#user-tools {
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muko-text-faint);
+}
+
+#user-tools a {
+    color: var(--muko-text);
+}
+
+#user-tools a:hover {
+    color: var(--muko-red);
+}
+
+div.breadcrumbs {
+    padding: 14px 28px;
+    background: transparent;
+    border-bottom: 1px solid var(--muko-border);
+    color: var(--muko-text-soft);
+}
+
+#content {
+    padding: 28px;
+}
+
+#content-main,
+.dashboard #content-main,
+#changelist,
+.module,
+.inline-group,
+.submit-row,
+.selector,
+.selector .selector-available h2,
+.selector .selector-chosen h2,
+.results,
+.dashboard .module table,
+.dashboard .module,
+.form-row,
+.aligned .form-row,
+fieldset,
+.submit-row,
+#content-related,
+#content-related .module,
+.paginator,
+ul.messagelist li,
+div.help,
+form .help,
+p.help,
+table,
+.object-tools a,
+.button,
+input[type="submit"],
+input[type="button"],
+.submit-row a.deletelink,
+.submit-row a.closelink,
+a.button,
+.button.default,
+input[type="submit"].default,
+.selector select,
+.calendarbox,
+.clockbox {
+    border-radius: 18px;
+}
+
+.dashboard #content {
+    width: min(1240px, 100%);
+}
+
+.dashboard .module,
+.module,
+.inline-group,
+.selector,
+#content-related .module,
+.results,
+fieldset,
+.paginator,
+ul.messagelist li,
+div.help,
+form .help,
+p.help {
+    background: linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.03));
+    border: 1px solid var(--muko-border);
+    box-shadow: 0 18px 44px rgba(0, 0, 0, 0.22);
+}
+
+.dashboard .module,
+.module {
+    overflow: hidden;
+}
+
+.muko-admin-shell {
+    display: grid;
+    gap: 24px;
+}
+
+.muko-admin-hero,
+.muko-admin-actions,
+.muko-admin-apps,
+.muko-admin-activity {
+    background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.03));
+    border: 1px solid var(--muko-border);
+    border-radius: 24px;
+    box-shadow: 0 22px 48px rgba(0, 0, 0, 0.24);
+}
+
+.muko-admin-hero {
+    position: relative;
+    overflow: hidden;
+    padding: 32px;
+    background:
+        radial-gradient(circle at top right, rgba(255, 49, 49, 0.18), transparent 28%),
+        linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.025));
+}
+
+.muko-admin-hero::after {
+    content: "";
+    position: absolute;
+    inset: auto -60px -80px auto;
+    width: 220px;
+    height: 220px;
+    background: radial-gradient(circle, rgba(255, 49, 49, 0.22), transparent 68%);
+    pointer-events: none;
+}
+
+.muko-admin-eyebrow {
+    display: inline-block;
+    margin-bottom: 10px;
+    color: var(--muko-red);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+}
+
+.muko-admin-title {
+    margin: 0;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.4rem, 4vw, 4rem);
+    letter-spacing: 0.04em;
+    line-height: 0.94;
+    color: #fff;
+}
+
+.muko-admin-copy {
+    max-width: 700px;
+    margin: 16px 0 0;
+    color: var(--muko-text-soft);
+    font-size: 1rem;
+    line-height: 1.75;
+}
+
+.muko-admin-grid {
+    display: grid;
+    gap: 24px;
+    grid-template-columns: minmax(0, 1.7fr) minmax(320px, 0.9fr);
+}
+
+.muko-admin-panel {
+    padding: 28px;
+}
+
+.muko-admin-panel-header {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.muko-admin-panel-title {
+    margin: 0;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    letter-spacing: 0.06em;
+    color: #fff;
+}
+
+.muko-admin-panel-copy {
+    margin: 6px 0 0;
+    color: var(--muko-text-faint);
+}
+
+.muko-admin-action-grid,
+.muko-admin-app-grid {
+    display: grid;
+    gap: 16px;
+}
+
+.muko-admin-action-grid {
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+}
+
+.muko-admin-action-card,
+.muko-admin-app-card {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-height: 180px;
+    padding: 22px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.025));
+    border: 1px solid var(--muko-border);
+    border-radius: 20px;
+}
+
+.muko-admin-action-card:hover,
+.muko-admin-app-card:hover {
+    border-color: var(--muko-border-strong);
+    transform: translateY(-2px);
+}
+
+.muko-admin-action-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    background: rgba(255, 49, 49, 0.12);
+    color: var(--muko-red);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.muko-admin-card-title {
+    margin: 0;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.muko-admin-card-metric {
+    margin: 0;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.4rem;
+    line-height: 1;
+    letter-spacing: 0.05em;
+    color: #fff;
+}
+
+.muko-admin-card-meta {
+    margin: 4px 0 0;
+    color: var(--muko-text-faint);
+    font-size: 0.76rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.muko-admin-card-copy {
+    margin: 0;
+    color: var(--muko-text-soft);
+    line-height: 1.7;
+}
+
+.muko-admin-card-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: auto;
+}
+
+.muko-admin-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border: 1px solid var(--muko-border);
+    border-radius: 999px;
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    background: rgba(255,255,255,0.03);
+}
+
+.muko-admin-link:hover {
+    border-color: var(--muko-red);
+    background: rgba(255, 49, 49, 0.14);
+    color: #fff;
+}
+
+.muko-admin-link.is-primary {
+    background: var(--muko-red);
+    border-color: transparent;
+}
+
+.muko-admin-link.is-primary:hover {
+    background: var(--muko-red-deep);
+}
+
+.muko-admin-app-grid {
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.muko-admin-model-list {
+    display: grid;
+    gap: 12px;
+}
+
+.muko-admin-model {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 16px;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.04);
+}
+
+.muko-admin-model-name {
+    font-weight: 700;
+    color: #fff;
+}
+
+.muko-admin-model-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: end;
+    gap: 8px;
+}
+
+.muko-admin-model-link {
+    color: var(--muko-text-soft);
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.muko-admin-model-link:hover {
+    color: var(--muko-red);
+}
+
+.muko-admin-empty {
+    margin: 0;
+    color: var(--muko-text-faint);
+}
+
+.muko-admin-action-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 12px;
+}
+
+.muko-admin-action-list li {
+    padding: 14px 16px;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.muko-admin-action-list a {
+    color: #fff;
+    font-weight: 600;
+}
+
+.muko-admin-action-list a:hover {
+    color: var(--muko-red);
+}
+
+.muko-admin-action-meta {
+    display: block;
+    margin-top: 6px;
+    color: var(--muko-text-faint);
+    font-size: 0.78rem;
+}
+
+.muko-admin-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    margin-bottom: 18px;
+}
+
+.muko-admin-toolbar-copy {
+    max-width: 760px;
+}
+
+.muko-admin-kicker {
+    display: inline-block;
+    margin-bottom: 8px;
+    color: var(--muko-red);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+}
+
+.muko-admin-toolbar h1 {
+    margin: 0;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2rem, 3vw, 3rem);
+    line-height: 0.95;
+    letter-spacing: 0.05em;
+    color: #fff;
+}
+
+.muko-admin-toolbar p {
+    margin: 10px 0 0;
+    color: var(--muko-text-soft);
+    line-height: 1.7;
+}
+
+.muko-admin-toolbar-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.muko-admin-surface {
+    padding: 24px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.03));
+    border: 1px solid var(--muko-border);
+    border-radius: 24px;
+    box-shadow: 0 22px 48px rgba(0, 0, 0, 0.24);
+}
+
+.muko-admin-surface + .muko-admin-surface {
+    margin-top: 20px;
+}
+
+.change-list #content-main,
+.change-form #content-main {
+    display: block;
+}
+
+.change-list .object-tools,
+.change-form .object-tools {
+    margin: 0;
+    padding: 0;
+}
+
+.change-list .object-tools li,
+.change-form .object-tools li {
+    margin: 0;
+}
+
+.change-list .object-tools a,
+.change-form .object-tools a {
+    display: inline-flex;
+    align-items: center;
+}
+
+.change-list #changelist,
+.change-form form > div {
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+}
+
+.change-list .changelist-form-container {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: minmax(0, 1fr);
+}
+
+.change-list #toolbar,
+.change-list #changelist-filter,
+.change-list .results,
+.change-list .paginator,
+.change-list .actions,
+.change-list .xfull,
+.change-form fieldset,
+.change-form .inline-group,
+.change-form .submit-row,
+.change-form .after-related,
+.change-form .related-widget-wrapper,
+.change-form .help,
+.change-form .errornote,
+.change-list .errornote {
+    background: linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.03));
+    border: 1px solid var(--muko-border);
+    border-radius: 20px;
+    box-shadow: 0 18px 42px rgba(0, 0, 0, 0.2);
+}
+
+.change-list #toolbar {
+    padding: 18px;
+}
+
+.change-list #searchbar {
+    min-width: min(460px, 100%);
+}
+
+.change-list #toolbar form,
+.change-list #toolbar div,
+.change-list #toolbar label {
+    color: var(--muko-text-soft);
+}
+
+.change-list #changelist-filter {
+    padding: 18px;
+}
+
+.change-list #changelist-filter h2,
+.change-list #changelist-filter h3 {
+    color: #fff;
+}
+
+.change-list #changelist-filter details,
+.change-list #changelist-filter summary,
+.change-list #changelist-filter ul,
+.change-list #changelist-filter li {
+    background: transparent;
+}
+
+.change-list .results {
+    overflow: hidden;
+}
+
+.change-list .results table {
+    margin: 0;
+    border: 0;
+    box-shadow: none;
+}
+
+.change-list .results thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.change-list .results tbody tr:nth-child(even) {
+    background: rgba(255,255,255,0.02);
+}
+
+.change-list .paginator,
+.change-list .actions {
+    padding: 14px 18px;
+}
+
+.change-form fieldset {
+    padding: 18px 20px 8px;
+}
+
+.change-form .form-row {
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.change-form .form-row:last-child {
+    border-bottom: 0;
+}
+
+.change-form .submit-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    padding: 18px;
+}
+
+.change-form .submit-row input,
+.change-form .submit-row a {
+    margin: 0;
+}
+
+.change-form .inline-group .tabular table {
+    border: 0;
+    box-shadow: none;
+}
+
+.dashboard .module caption,
+.dashboard .module h2,
+.dashboard .module thead th,
+.module h2,
+.module caption,
+.inline-group h2 {
+    background: linear-gradient(90deg, rgba(255, 49, 49, 0.16), rgba(255, 49, 49, 0.03));
+    color: #fff;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--muko-border);
+}
+
+.dashboard .module td,
+.dashboard .module th,
+.results th,
+.results td,
+.module table td,
+.module table th {
+    border-color: var(--muko-border);
+}
+
+.dashboard .module tbody tr:hover,
+.results tbody tr:hover,
+.module table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.035);
+}
+
+.dashboard .module a,
+.module a,
+.results a,
+td a,
+th a {
+    color: var(--muko-text);
+}
+
+.dashboard .module a:hover,
+.module a:hover,
+.results a:hover,
+td a:hover,
+th a:hover {
+    color: var(--muko-red);
+}
+
+.addlink,
+.changelink,
+.deletelink,
+.viewlink,
+.historylink {
+    color: var(--muko-red) !important;
+}
+
+.button,
+input[type="submit"],
+input[type="button"],
+.object-tools a,
+a.button,
+.submit-row input,
+.submit-row a.deletelink,
+.submit-row a.closelink {
+    border: 1px solid transparent;
+    background: var(--muko-red);
+    color: #fff;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    box-shadow: 0 14px 30px rgba(255, 49, 49, 0.2);
+}
+
+.object-tools {
+    gap: 10px;
+}
+
+.object-tools a:hover,
+.button:hover,
+input[type="submit"]:hover,
+input[type="button"]:hover,
+a.button:hover,
+.submit-row input:hover {
+    background: var(--muko-red-deep);
+    color: #fff;
+    transform: translateY(-1px);
+}
+
+.submit-row {
+    padding: 16px 0 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+}
+
+.submit-row a.deletelink,
+.submit-row a.closelink {
+    background: rgba(255,255,255,0.08);
+    border-color: var(--muko-border);
+    color: var(--muko-text);
+    box-shadow: none;
+}
+
+.submit-row a.deletelink:hover,
+.submit-row a.closelink:hover {
+    background: rgba(255,255,255,0.14);
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="number"],
+input[type="url"],
+input[type="tel"],
+textarea,
+select,
+.vTextField,
+.vURLField,
+.vIntegerField,
+.vTextArea {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--muko-border);
+    color: #fff;
+    border-radius: 12px;
+    padding: 12px 14px;
+}
+
+input:focus,
+textarea:focus,
+select:focus,
+.selector select:focus {
+    border-color: var(--muko-red);
+    box-shadow: 0 0 0 3px rgba(255, 49, 49, 0.16);
+    outline: 0;
+}
+
+.aligned label,
+label,
+.form-row label,
+.login label {
+    color: var(--muko-text-soft);
+    font-weight: 600;
+}
+
+.help,
+p.help,
+form .help,
+div.help,
+.quiet,
+small,
+.helptext {
+    color: var(--muko-text-faint);
+}
+
+.selector select {
+    min-height: 240px;
+}
+
+ul.messagelist {
+    padding: 0;
+}
+
+ul.messagelist li {
+    margin: 0 0 16px;
+    padding: 14px 18px;
+}
+
+.errornote,
+ul.errorlist,
+.errorlist li {
+    background: rgba(255, 49, 49, 0.12);
+    border-color: rgba(255, 49, 49, 0.35);
+    color: #ff9f9f;
+}
+
+body.login {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background:
+        radial-gradient(circle at top left, rgba(255, 49, 49, 0.18), transparent 26%),
+        linear-gradient(180deg, #080808 0%, #020202 100%);
+}
+
+body.login #container {
+    width: min(460px, calc(100vw - 32px));
+    min-width: 0;
+    margin: 24px;
+    background: transparent;
+    border: 0;
+}
+
+body.login #header {
+    position: static;
+    justify-content: center;
+    min-height: auto;
+    padding: 0 0 20px;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+}
+
+body.login #content {
+    padding: 0;
+}
+
+body.login #content-main {
+    padding: 36px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.055), rgba(255,255,255,0.03));
+    border: 1px solid var(--muko-border);
+    box-shadow: 0 28px 60px rgba(0, 0, 0, 0.35);
+}
+
+body.login .submit-row {
+    padding-top: 18px;
+}
+
+body.login .submit-row input {
+    width: 100%;
+}
+
+#footer {
+    padding: 16px 28px 28px;
+    color: var(--muko-text-faint);
+}
+
+@media (max-width: 1024px) {
+    #content {
+        padding: 20px;
+    }
+
+    #header {
+        padding: 0 20px;
+    }
+
+    .muko-admin-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 640px) {
+    .muko-admin-hero,
+    .muko-admin-panel {
+        padding: 22px;
+    }
+
+    .muko-admin-action-grid,
+    .muko-admin-app-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MUKO DASHBOARD v2 — KPI + Charts + Quick Actions
+   ═══════════════════════════════════════════════════════════ */
+
+.muko-dash {
+    display: grid;
+    gap: 20px;
+    max-width: 1280px;
+}
+
+/* ── KPI bar ─────────────────────────────────────────────── */
+.muko-kpi-bar {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.muko-kpi {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 22px 24px;
+    background: linear-gradient(160deg, rgba(255,255,255,0.055), rgba(255,255,255,0.025));
+    border: 1px solid var(--muko-border);
+    border-radius: 20px;
+    box-shadow: 0 16px 36px rgba(0,0,0,0.22);
+    transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.muko-kpi:hover {
+    border-color: var(--muko-border-strong);
+    transform: translateY(-2px);
+}
+
+.muko-kpi-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muko-text-faint);
+}
+
+.muko-kpi-value {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3rem;
+    line-height: 1;
+    letter-spacing: 0.04em;
+    color: #fff;
+}
+
+.muko-kpi-sub {
+    font-size: 0.72rem;
+    color: var(--muko-text-faint);
+}
+
+/* ── Chart row ───────────────────────────────────────────── */
+.muko-chart-row {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+}
+
+/* ── Generic panel ───────────────────────────────────────── */
+.muko-panel {
+    padding: 26px;
+    background: linear-gradient(160deg, rgba(255,255,255,0.05), rgba(255,255,255,0.025));
+    border: 1px solid var(--muko-border);
+    border-radius: 22px;
+    box-shadow: 0 20px 44px rgba(0,0,0,0.22);
+}
+
+.muko-panel-head {
+    margin-bottom: 18px;
+}
+
+.muko-panel-h2 {
+    margin: 0;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem;
+    letter-spacing: 0.06em;
+    color: #fff;
+}
+
+.muko-panel-sub {
+    margin: 4px 0 0;
+    font-size: 0.78rem;
+    color: var(--muko-text-faint);
+}
+
+/* ── Chart canvas containers ─────────────────────────────── */
+.muko-chart-wrap {
+    position: relative;
+    height: 220px;
+}
+
+.muko-chart-wrap--donut {
+    height: 240px;
+}
+
+/* ── Lower row: actions + activity log ───────────────────── */
+.muko-lower-row {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+}
+
+/* ── Quick action list ───────────────────────────────────── */
+.muko-qa-list {
+    display: grid;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.muko-qa {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 18px;
+    border-radius: 14px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.05);
+    color: var(--muko-text);
+    text-decoration: none;
+    transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+}
+
+.muko-qa:hover {
+    background: rgba(255,49,49,0.1);
+    border-color: rgba(255,49,49,0.3);
+    color: #fff;
+}
+
+.muko-qa-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.muko-qa-badge {
+    flex-shrink: 0;
+    min-width: 28px;
+    text-align: center;
+    padding: 2px 9px;
+    border-radius: 999px;
+    background: rgba(255,49,49,0.14);
+    color: var(--muko-red);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+}
+
+.muko-qa-adds {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.muko-qa-add {
+    display: inline-flex;
+    align-items: center;
+    padding: 9px 16px;
+    border-radius: 999px;
+    border: 1px solid var(--muko-border);
+    color: var(--muko-text-soft);
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: transparent;
+    transition: border-color 0.18s ease, color 0.18s ease, background 0.18s ease;
+}
+
+.muko-qa-add:hover {
+    border-color: var(--muko-red);
+    color: #fff;
+    background: rgba(255,49,49,0.12);
+}
+
+/* ── Activity log ────────────────────────────────────────── */
+.muko-log {
+    list-style: none;
+    padding: 0;
+    margin: 16px 0 0;
+    display: grid;
+    gap: 10px;
+}
+
+.muko-log-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: 14px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.04);
+}
+
+.muko-log-flag {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.muko-log-flag.flag-add   { background: rgba(28,159,96,0.16); color: #2ecc71; }
+.muko-log-flag.flag-edit  { background: rgba(52,152,219,0.16); color: #5dade2; }
+.muko-log-flag.flag-del   { background: rgba(255,49,49,0.16); color: var(--muko-red); }
+
+.muko-log-body {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+}
+
+.muko-log-name {
+    font-weight: 600;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+a.muko-log-name:hover {
+    color: var(--muko-red);
+}
+
+.muko-log-type {
+    font-size: 0.72rem;
+    color: var(--muko-text-faint);
+    letter-spacing: 0.08em;
+}
+
+.muko-empty {
+    color: var(--muko-text-faint);
+    font-size: 0.9rem;
+}
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 1100px) {
+    .muko-kpi-bar      { grid-template-columns: repeat(2, 1fr); }
+    .muko-chart-row    { grid-template-columns: 1fr; }
+    .muko-lower-row    { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 600px) {
+    .muko-kpi-bar      { grid-template-columns: 1fr 1fr; }
+    .muko-panel        { padding: 18px; }
+    .muko-kpi          { padding: 16px 18px; }
+    .muko-kpi-value    { font-size: 2.4rem; }
+}

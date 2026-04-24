@@ -1,0 +1,504 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+
+{% block content %}
+<section id="home" class="relative h-screen w-full overflow-hidden bg-muko-black">
+    <!-- Background Image with Overlay -->
+    <div class="absolute inset-0 z-0 overflow-hidden">
+        <img id="hero-bg" src="{% static 'img/bg.png' %}" alt="Muko" class="w-full h-full object-cover opacity-80 grayscale contrast-125">
+        <div id="hero-bg-veil" class="absolute inset-0 bg-muko-black pointer-events-none"></div>
+        <div class="absolute inset-0 bg-gradient-to-r from-muko-black via-muko-black/30 to-transparent"></div>
+    </div>
+
+    <!-- Scroll-darken overlay -->
+    <div id="hero-scroll-darken" class="absolute inset-0 z-[15] bg-black pointer-events-none" style="opacity:0"></div>
+
+    <!-- Top Right Action -->
+    <div class="absolute top-6 right-12 z-20">
+        <a href="{{ whatsapp_contact_url }}" target="_blank" rel="noreferrer"
+           class="lets-talk-btn group flex items-center gap-3 px-7 py-3 bg-muko-red rounded-full text-xs font-bold tracking-widest uppercase text-white hover:bg-[#e02020] transition-colors duration-300">
+            LET'S TALK
+            <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+        </a>
+    </div>
+
+    <!-- Hero Content -->
+    <div class="relative z-10 h-full flex flex-col justify-center px-8 md:px-24 lg:px-40 max-w-6xl">
+        <h2 id="hero-hello" class="font-script text-muko-red text-4xl md:text-5xl lg:text-6xl mb-2">Hello, I'm</h2>
+        <h1 id="hero-title" class="font-bebas text-7xl md:text-[10rem] lg:text-[14rem] leading-[0.85] tracking-tight text-white mb-8">
+            <span class="muko-char inline-block">M</span><span class="muko-char inline-block">U</span><span class="muko-char inline-block">K</span><span class="muko-char inline-block">O</span>
+        </h1>
+        
+        <p id="hero-sub" class="text-white/80 text-lg md:text-xl lg:text-2xl max-w-xl mb-12 leading-tight font-light">
+            I design and build digital experiences <br class="hidden md:block">
+            that convert, engage, and stand out.
+        </p>
+
+        <div id="hero-cta">
+            <a href="#work" class="view-work-btn group inline-flex items-center gap-6 px-8 md:px-10 py-4 border border-white/40 rounded-sm font-semibold tracking-widest text-[10px] hover:border-white uppercase">
+                View My Work
+                <i data-lucide="arrow-right" class="w-5 h-5 text-muko-red group-hover:translate-x-2 transition-transform"></i>
+            </a>
+        </div>
+    </div>
+
+    <!-- Scroll Indicator -->
+    <div id="scroll-indicator" class="absolute bottom-12 right-12 z-20 flex flex-col items-center gap-3">
+        <div class="flex flex-col items-center gap-1.5">
+            <span class="block w-1 h-1 rounded-full bg-muko-red scroll-dot"></span>
+            <span class="block w-1 h-1 rounded-full bg-muko-red/60 scroll-dot" style="animation-delay:0.2s"></span>
+            <span class="block w-1 h-1 rounded-full bg-muko-red/30 scroll-dot" style="animation-delay:0.4s"></span>
+        </div>
+        <span class="text-[9px] tracking-[0.4em] text-white/30 uppercase [writing-mode:vertical-rl]">Scroll</span>
+    </div>
+</section>
+
+<!-- Services Section (Bento Grid) -->
+<section id="skills" class="py-20 md:py-24 px-6 md:px-20 lg:px-32 bg-muko-black border-t border-white/5">
+    <div class="max-w-7xl mx-auto">
+        <div class="mb-12 md:mb-16">
+            <h3 class="text-muko-red font-script text-2xl md:text-3xl mb-2">My Expertise</h3>
+            <h2 class="text-4xl md:text-5xl lg:text-7xl font-bebas tracking-tight text-white">Services <span class="text-white/20">& Solutions</span></h2>
+        </div>
+
+        <div id="services-grid" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <!-- Web Development (Large Card) -->
+            <div class="md:col-span-2 lg:col-span-2 group relative p-10 bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:border-muko-red/50 transition-all duration-500">
+                <div class="relative z-10">
+                    <i data-lucide="code-2" class="w-12 h-12 text-muko-red mb-6"></i>
+                    <h4 class="text-3xl font-bebas text-white mb-4">Web Development</h4>
+                    <p class="text-white/50 leading-relaxed max-w-sm">
+                        Building high-performance, scalable web applications using modern stacks like Django, React, and HTMX.
+                    </p>
+                </div>
+                <div class="absolute bottom-0 right-0 p-8 opacity-10 group-hover:opacity-30 transition-opacity">
+                    <i data-lucide="code-2" class="w-32 h-32 text-white"></i>
+                </div>
+            </div>
+
+            <!-- UI/UX Design -->
+            <div class="group relative p-10 bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:border-muko-red/50 transition-all duration-500">
+                <div class="relative z-10">
+                    <i data-lucide="framer" class="w-10 h-10 text-muko-red mb-6"></i>
+                    <h4 class="text-3xl font-bebas text-white mb-4">UI/UX Design</h4>
+                    <p class="text-white/50 text-sm leading-relaxed">
+                        Creating intuitive and visually stunning interfaces that prioritize user experience.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Digital Platforms -->
+            <div class="group relative p-10 bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:border-muko-red/50 transition-all duration-500">
+                <div class="relative z-10">
+                    <i data-lucide="layout-grid" class="w-10 h-10 text-muko-red mb-6"></i>
+                    <h4 class="text-3xl font-bebas text-white mb-4">Digital Platforms</h4>
+                    <p class="text-white/50 text-sm leading-relaxed">
+                        End-to-end digital transformation for businesses looking to scale online.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Cloud Solutions -->
+            <div class="lg:col-span-2 group relative p-10 bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:border-muko-red/50 transition-all duration-500">
+                <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                    <div>
+                        <i data-lucide="cloud" class="w-12 h-12 text-muko-red mb-6"></i>
+                        <h4 class="text-3xl font-bebas text-white mb-4">Cloud Infrastructure</h4>
+                        <p class="text-white/50 leading-relaxed max-w-md">
+                            Deploying robust and secure cloud environments to ensure your platform is always available.
+                        </p>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="px-4 py-2 bg-white/5 rounded-full text-[10px] text-white/40 tracking-widest uppercase">AWS</div>
+                        <div class="px-4 py-2 bg-white/5 rounded-full text-[10px] text-white/40 tracking-widest uppercase">Azure</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SEO & Optimization -->
+            <div class="md:col-span-2 group relative p-10 bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:border-muko-red/50 transition-all duration-500">
+                <div class="relative z-10">
+                    <i data-lucide="search" class="w-10 h-10 text-muko-red mb-6"></i>
+                    <h4 class="text-3xl font-bebas text-white mb-4">Performance & SEO</h4>
+                    <p class="text-white/50 leading-relaxed">
+                        Optimizing every pixel and line of code for maximum visibility and lightning-fast load times.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Work Section -->
+<section id="work" class="py-20 md:py-24 px-6 md:px-20 lg:px-32 bg-muko-black">
+    <div class="max-w-7xl mx-auto">
+        <div class="mb-12 md:mb-16">
+                <h3 class="text-muko-red font-script text-2xl md:text-3xl mb-2">Selected Projects</h3>
+                <h2 class="text-4xl md:text-5xl lg:text-7xl font-bebas tracking-tight text-white">Featured <span class="text-white/20">Works</span></h2>
+            </div>
+
+        {% include 'core/partials/featured_projects.html' %}
+    </div>
+</section>
+
+<!-- Shop Section -->
+<section id="shop" class="border-t border-white/5 bg-muko-black px-6 py-20 md:px-20 lg:px-32">
+    <div class="mx-auto max-w-7xl">
+        {% with section=shop_section %}
+        <div class="mb-12 md:mb-16">
+            <h3 class="mb-2 font-script text-2xl text-muko-red md:text-3xl">{{ section.eyebrow|default:'Shop' }}</h3>
+            <h2 class="font-bebas text-4xl tracking-tight text-white md:text-5xl lg:text-7xl">{{ section.heading|default:'Digital Goods' }} <span class="text-white/20">{{ section.heading_highlight|default:'& Garments' }}</span></h2>
+            <p class="mt-6 max-w-2xl text-base leading-relaxed text-white/55 md:text-lg">
+                {{ section.description|default:'A curated storefront is coming soon for premium website templates, practical digital assets, and limited garment drops built around the same design language as the client work.' }}
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+            {% for item in shop_items %}
+            <article class="overflow-hidden rounded-[1.75rem] border border-white/10 bg-white/5 transition-colors hover:border-muko-red/40">
+                <div class="relative aspect-[4/3] overflow-hidden border-b border-white/10 bg-white/5">
+                    <img src="{% static item.image_path %}" alt="{{ item.title }}" class="h-full w-full object-cover transition-transform duration-700 hover:scale-105">
+                    <div class="absolute left-6 top-6 flex h-14 w-14 items-center justify-center rounded-full border border-white/10 bg-black/50 backdrop-blur-sm">
+                        <i data-lucide="{{ item.icon }}" class="h-6 w-6 text-muko-red"></i>
+                    </div>
+                </div>
+                <div class="p-8">
+                    <p class="text-[10px] uppercase tracking-[0.35em] text-white/35">{{ item.category }}</p>
+                    <h4 class="mt-4 font-bebas text-3xl text-white">{{ item.title }}</h4>
+                    <p class="mt-4 text-sm leading-relaxed text-white/60">{{ item.description }}</p>
+                    {% if item.link_url %}
+                    <a href="{{ item.link_url }}" class="mt-6 inline-flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.25em] text-muko-red transition-colors hover:text-white">
+                        Explore
+                        <i data-lucide="arrow-right" class="h-4 w-4"></i>
+                    </a>
+                    {% endif %}
+                </div>
+            </article>
+            {% empty %}
+            <div class="md:col-span-3 rounded-[1.75rem] border border-dashed border-white/10 bg-white/5 p-8 text-center text-white/45">
+                Add shop items in the admin to populate this section.
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="mt-12 flex flex-wrap gap-4">
+            <a href="{{ section.primary_cta_url|default:whatsapp_contact_url }}" class="inline-flex items-center gap-3 rounded-full border border-muko-red bg-muko-red px-6 py-3 text-xs font-semibold uppercase tracking-[0.25em] text-white transition-colors hover:bg-muko-red/80">
+                {{ section.primary_cta_label|default:'Ask About The Shop' }}
+                <i data-lucide="arrow-right" class="h-4 w-4"></i>
+            </a>
+            <span class="inline-flex items-center gap-3 rounded-full border border-white/10 px-6 py-3 text-xs font-semibold uppercase tracking-[0.25em] text-white/50">
+                {{ section.secondary_badge_label|default:'Launching Soon' }}
+                <i data-lucide="{{ section.secondary_badge_icon|default:'clock-3' }}" class="h-4 w-4"></i>
+            </span>
+        </div>
+        {% endwith %}
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section id="contact" class="py-20 md:py-24 px-6 md:px-20 lg:px-32 bg-muko-black border-t border-white/5">
+    <div class="max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
+            <div>
+                <h3 class="text-muko-red font-script text-2xl md:text-3xl mb-2">Get in touch</h3>
+                <h2 class="text-4xl md:text-5xl lg:text-7xl font-bebas tracking-tight text-white mb-6 md:mb-8">Let's <span class="text-white/20">Collaborate</span></h2>
+                <p class="text-white/50 text-base md:text-lg mb-8 md:mb-12 max-w-md">
+                    Have a project in mind? Looking for a partner to build something impactful? Message me on WhatsApp and let's start the conversation where it is fastest.
+                </p>
+                
+                <div class="space-y-6">
+                    <div class="flex items-center gap-6">
+                        <div class="w-14 h-14 flex items-center justify-center bg-white/5 rounded-full border border-white/10">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" class="h-6 w-6 fill-muko-red"><path d="M19.05 4.91A9.82 9.82 0 0 0 12.03 2C6.6 2 2.16 6.42 2.16 11.86c0 1.74.45 3.43 1.3 4.92L2 22l5.39-1.41a9.83 9.83 0 0 0 4.64 1.18h.01c5.43 0 9.86-4.42 9.86-9.86a9.8 9.8 0 0 0-2.85-7Zm-7.02 15.2h-.01a8.15 8.15 0 0 1-4.15-1.13l-.3-.18-3.2.84.85-3.12-.2-.32a8.14 8.14 0 0 1-1.25-4.34c0-4.49 3.66-8.14 8.17-8.14 2.18 0 4.22.85 5.76 2.38a8.08 8.08 0 0 1 2.38 5.76c0 4.49-3.66 8.15-8.15 8.15Zm4.47-6.12c-.24-.12-1.4-.69-1.62-.76-.22-.08-.38-.12-.54.12-.16.24-.62.76-.76.92-.14.16-.28.18-.52.06-.24-.12-1.02-.37-1.94-1.18-.72-.64-1.2-1.42-1.34-1.66-.14-.24-.02-.37.1-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.3-.74-1.78-.2-.48-.4-.41-.54-.42h-.46c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2s.86 2.32.98 2.48c.12.16 1.68 2.56 4.06 3.59.57.24 1.02.38 1.37.48.58.18 1.1.16 1.52.1.46-.07 1.4-.57 1.6-1.12.2-.55.2-1.02.14-1.12-.06-.1-.22-.16-.46-.28Z"/></svg>
+                        </div>
+                        <div>
+                            <p class="text-white/30 text-xs uppercase tracking-widest mb-1">WhatsApp</p>
+                            <a href="{{ whatsapp_contact_url }}" target="_blank" rel="noreferrer" class="text-white font-medium hover:text-muko-red transition-colors">0717 157 165</a>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-6">
+                        <div class="w-14 h-14 flex items-center justify-center bg-white/5 rounded-full border border-white/10">
+                            <i data-lucide="map-pin" class="w-6 h-6 text-muko-red"></i>
+                        </div>
+                        <div>
+                            <p class="text-white/30 text-xs uppercase tracking-widest mb-1">Availability</p>
+                            <p class="text-white font-medium">Open to freelance and in-house collaborations</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white/5 border border-white/10 p-10 rounded-3xl">
+                <div class="space-y-8">
+                    <div>
+                        <p class="text-[10px] uppercase tracking-[0.3em] text-white/35">Preferred Contact</p>
+                        <h3 class="mt-4 font-bebas text-3xl text-white md:text-4xl">Start on WhatsApp</h3>
+                        <p class="mt-4 max-w-lg text-sm leading-relaxed text-white/55 md:text-base">
+                            Tap through to WhatsApp for project inquiries, quick questions, template requests, or shop-related conversations. If you already have a brief, send it there and I can respond directly.
+                        </p>
+                    </div>
+
+                    <a href="{{ whatsapp_contact_url }}" target="_blank" rel="noreferrer" class="inline-flex w-full items-center justify-center gap-3 rounded-xl border border-muko-red bg-muko-red px-6 py-5 text-xs font-bold uppercase tracking-[0.25em] text-white transition-colors hover:bg-muko-red/80 shadow-lg shadow-muko-red/20">
+                        Chat On WhatsApp
+                        <svg viewBox="0 0 24 24" aria-hidden="true" class="h-5 w-5 fill-current"><path d="M19.05 4.91A9.82 9.82 0 0 0 12.03 2C6.6 2 2.16 6.42 2.16 11.86c0 1.74.45 3.43 1.3 4.92L2 22l5.39-1.41a9.83 9.83 0 0 0 4.64 1.18h.01c5.43 0 9.86-4.42 9.86-9.86a9.8 9.8 0 0 0-2.85-7Zm-7.02 15.2h-.01a8.15 8.15 0 0 1-4.15-1.13l-.3-.18-3.2.84.85-3.12-.2-.32a8.14 8.14 0 0 1-1.25-4.34c0-4.49 3.66-8.14 8.17-8.14 2.18 0 4.22.85 5.76 2.38a8.08 8.08 0 0 1 2.38 5.76c0 4.49-3.66 8.15-8.15 8.15Zm4.47-6.12c-.24-.12-1.4-.69-1.62-.76-.22-.08-.38-.12-.54.12-.16.24-.62.76-.76.92-.14.16-.28.18-.52.06-.24-.12-1.02-.37-1.94-1.18-.72-.64-1.2-1.42-1.34-1.66-.14-.24-.02-.37.1-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.3-.74-1.78-.2-.48-.4-.41-.54-.42h-.46c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2s.86 2.32.98 2.48c.12.16 1.68 2.56 4.06 3.59.57.24 1.02.38 1.37.48.58.18 1.1.16 1.52.1.46-.07 1.4-.57 1.6-1.12.2-.55.2-1.02.14-1.12-.06-.1-.22-.16-.46-.28Z"/></svg>
+                    </a>
+
+                    <div class="rounded-2xl border border-white/10 bg-black/20 p-6">
+                        <p class="text-[10px] uppercase tracking-[0.3em] text-white/35">Number</p>
+                        <p class="mt-3 font-bebas text-3xl text-white">0717 157 165</p>
+                        <p class="mt-3 text-sm leading-relaxed text-white/45">
+                            Available for freelance builds, product design work, digital asset inquiries, and selected in-house collaborations.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="py-12 px-6 md:px-20 lg:px-32 bg-muko-black border-t border-white/5 text-center">
+    <p class="text-white/20 text-[10px] tracking-widest uppercase">
+        &copy; 2026 MUKO. Built with Passion.
+    </p>
+</footer>
+
+<style>
+    /* ── Initial hidden states (GSAP animates these in) ── */
+    #hero-hello, .muko-char, #hero-sub, #hero-cta { opacity: 0; }
+
+    /* ── Scroll-dot bounce ─────────────────────────────── */
+    @keyframes scroll-dot-bounce {
+        0%, 100% { transform: translateY(0);   opacity: 1;   }
+        50%       { transform: translateY(5px); opacity: 0.4; }
+    }
+    .scroll-dot { animation: scroll-dot-bounce 1.4s ease-in-out infinite; }
+
+    /* ── "Let's Talk" idle glow pulse ─────────────────── */
+    @keyframes cta-glow {
+        0%, 100% { box-shadow: 0 0 20px rgba(255,49,49,0.4); }
+        50%       { box-shadow: 0 0 40px rgba(255,49,49,0.75), 0 0 0 5px rgba(255,49,49,0.12); }
+    }
+    .lets-talk-btn        { animation: cta-glow 2.5s ease-in-out infinite; }
+    .lets-talk-btn:hover  { animation: none; box-shadow: 0 0 44px rgba(255,49,49,0.85); }
+
+    /* ── "View My Work" hover lift ────────────────────── */
+    .view-work-btn {
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.25s ease, border-color 0.3s ease, box-shadow 0.25s ease;
+    }
+    .view-work-btn::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle 80px at var(--mx, 50%) var(--my, 50%), rgba(255,49,49,0.22), transparent 70%);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+        border-radius: inherit;
+    }
+    .view-work-btn.glow-near::before { opacity: 1; }
+    .view-work-btn:hover  { transform: translateY(-4px) scale(1.04); box-shadow: 0 14px 34px rgba(0,0,0,0.45); }
+    .view-work-btn:active { transform: translateY(-1px) scale(0.97); }
+
+    /* ── Featured projects panel transitions ─────────── */
+    #featured-projects-panel { transition: opacity 0.25s ease, transform 0.25s ease; }
+    #featured-projects-panel.is-updating { opacity: 0.35; transform: translateY(10px); }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Hero Parallax
+    gsap.to("#hero-bg", {
+        yPercent: 20,
+        ease: "none",
+        scrollTrigger: {
+            trigger: "section.relative",
+            start: "top top",
+            end: "bottom top",
+            scrub: true
+        }
+    });
+
+    gsap.to("#hero-title", {
+        yPercent: -50,
+        ease: "none",
+        scrollTrigger: {
+            trigger: "section.relative",
+            start: "top top",
+            end: "bottom top",
+            scrub: true
+        }
+    });
+
+    // ── Hero Entrance Timeline ────────────────────────────────────
+    gsap.set("#hero-hello",  { scale: 0.95, y: 10 });
+    gsap.set(".muko-char",   { scaleY: 0, transformOrigin: "bottom center" });
+    gsap.set("#hero-sub",    { y: 30 });
+    gsap.set("#hero-cta",    { y: 40 });
+
+    const heroTl = gsap.timeline({ delay: 0.2 });
+    heroTl
+        .to("#hero-bg-veil", { opacity: 0,    duration: 1.4, ease: "power2.inOut" }, 0)
+        .to("#hero-hello",   { opacity: 1, scale: 1, y: 0, duration: 0.85, ease: "power2.out" }, 0.3)
+        .to(".muko-char",    { opacity: 1, scaleY: 1, duration: 0.45, stagger: 0.08, ease: "back.out(2.5)" }, 0.75)
+        .to("#hero-sub",     { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 1.1)
+        .to("#hero-cta",     { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 1.25);
+
+    // ── Portrait mousemove parallax (bg layer only) ───────────────
+    const heroSection = document.getElementById('home');
+    if (heroSection) {
+        heroSection.addEventListener('mousemove', (e) => {
+            const rect = heroSection.getBoundingClientRect();
+            const xPct = (e.clientX - rect.left) / rect.width  - 0.5;
+            const yPct = (e.clientY - rect.top)  / rect.height - 0.5;
+            gsap.to("#hero-bg", { x: xPct * -20, y: yPct * -10, duration: 1.2, ease: "power1.out", overwrite: "auto" });
+        });
+        heroSection.addEventListener('mouseleave', () => {
+            gsap.to("#hero-bg", { x: 0, y: 0, duration: 1.6, ease: "power2.out" });
+        });
+    }
+
+    // ── Scroll indicator fades out after a little scroll ─────────
+    gsap.to("#scroll-indicator", {
+        opacity: 0,
+        scrollTrigger: { trigger: "#home", start: "12% top", end: "25% top", scrub: true }
+    });
+
+    // ── Hero darkens slightly on scroll ───────────────────────────
+    gsap.to("#hero-scroll-darken", {
+        opacity: 0.55,
+        scrollTrigger: { trigger: "#home", start: "top top", end: "bottom top", scrub: true }
+    });
+
+    // Section Headers Reveal
+    gsap.utils.toArray("h2.font-bebas").forEach(header => {
+        gsap.from(header, {
+            y: 100,
+            opacity: 0,
+            duration: 1.2,
+            scrollTrigger: {
+                trigger: header,
+                start: "top 90%",
+                toggleActions: "play none none reverse"
+            }
+        });
+    });
+
+    // Services reveal per card as each card enters the viewport.
+    const serviceCards = gsap.utils.toArray("#services-grid > div");
+    if (serviceCards.length) {
+        serviceCards.forEach((card, index) => {
+            let hasAnimated = false;
+
+            ScrollTrigger.create({
+                trigger: card,
+                start: "top 92%",
+                onEnter: () => {
+                    if (hasAnimated) {
+                        return;
+                    }
+
+                    hasAnimated = true;
+                    gsap.fromTo(
+                        card,
+                        {
+                            y: 30,
+                            opacity: 0,
+                        },
+                        {
+                            y: 0,
+                            opacity: 1,
+                            duration: 0.55,
+                            delay: Math.min(index * 0.04, 0.16),
+                            ease: "power2.out",
+                            overwrite: "auto",
+                        }
+                    );
+                },
+                onLeaveBack: () => {
+                    hasAnimated = false;
+                }
+            });
+        });
+    }
+
+    // Work Items Reveal
+    gsap.from(".work-item", {
+        y: 40,
+        opacity: 0,
+        duration: 0.8,
+        stagger: 0.1,
+        ease: "power2.out",
+        scrollTrigger: {
+            trigger: "#work .grid",
+            start: "top 90%",
+            toggleActions: "play none none reverse"
+        }
+    });
+
+    // ── "View My Work" proximity glow ──────────────────────────
+    const workBtn = document.querySelector('.view-work-btn');
+    if (workBtn) {
+        const PROXIMITY = 120; // px — how close the cursor needs to be
+        document.addEventListener('mousemove', (e) => {
+            const rect = workBtn.getBoundingClientRect();
+            const cx = rect.left + rect.width  / 2;
+            const cy = rect.top  + rect.height / 2;
+            const dist = Math.hypot(e.clientX - cx, e.clientY - cy);
+            if (dist < PROXIMITY + rect.width / 2) {
+                // map cursor position inside the button for the radial gradient
+                const x = ((e.clientX - rect.left) / rect.width  * 100).toFixed(1) + '%';
+                const y = ((e.clientY - rect.top)  / rect.height * 100).toFixed(1) + '%';
+                workBtn.style.setProperty('--mx', x);
+                workBtn.style.setProperty('--my', y);
+                workBtn.classList.add('glow-near');
+            } else {
+                workBtn.classList.remove('glow-near');
+            }
+        });
+    }
+
+    document.body.addEventListener('htmx:beforeRequest', (event) => {
+        const target = event.detail.target;
+        if (target && target.id === 'featured-projects-panel') {
+            target.classList.add('is-updating');
+        }
+    });
+
+    document.body.addEventListener('htmx:afterSwap', (event) => {
+        if (event.target.id === 'featured-projects-panel') {
+            event.target.classList.remove('is-updating');
+            lucide.createIcons();
+
+            const swappedCards = event.target.querySelectorAll('.work-item');
+            if (swappedCards.length) {
+                gsap.fromTo(
+                    swappedCards,
+                    {
+                        y: 24,
+                        opacity: 0,
+                    },
+                    {
+                        y: 0,
+                        opacity: 1,
+                        duration: 0.45,
+                        stagger: 0.06,
+                        ease: 'power2.out',
+                        overwrite: 'auto',
+                    }
+                );
+            }
+
+            return;
+        }
+
+    });
+</script>
+{% endblock %}

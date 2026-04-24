@@ -1,0 +1,21 @@
+{% extends "admin/change_list.html" %}
+{% load i18n admin_urls %}
+
+{% block content %}
+<div class="muko-admin-toolbar">
+    <div class="muko-admin-toolbar-copy">
+        <span class="muko-admin-kicker">Collection</span>
+        <h1>{{ cl.opts.verbose_name_plural|capfirst }}</h1>
+        <p>Review, filter, and update {{ cl.opts.verbose_name_plural }} in a cleaner CMS-style workspace.</p>
+    </div>
+    <div class="muko-admin-toolbar-actions">
+        {% if has_add_permission %}
+        <a class="muko-admin-link is-primary" href="{% url cl.opts|admin_urlname:'add' %}">{% blocktranslate with name=cl.opts.verbose_name %}Add {{ name }}{% endblocktranslate %}</a>
+        {% endif %}
+        <a class="muko-admin-link" href="{% url 'admin:index' %}">{% translate 'Dashboard' %}</a>
+    </div>
+</div>
+<div class="muko-admin-surface">
+    {{ block.super }}
+</div>
+{% endblock %}

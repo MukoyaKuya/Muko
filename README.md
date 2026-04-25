@@ -1,6 +1,6 @@
 # Muko
 
-Muko is a small Django portfolio site with a server-rendered landing page, HTMX-powered contact form, admin-visible contact submissions, and environment-backed runtime settings.
+Muko is a small Django portfolio site with a server-rendered landing page, WhatsApp-first contact flow, admin-managed content, and environment-backed runtime settings.
 
 ## Stack
 
@@ -32,7 +32,6 @@ DJANGO_ENV=development
 DEBUG=True
 ALLOWED_HOSTS=127.0.0.1,localhost
 CSRF_TRUSTED_ORIGINS=http://127.0.0.1:8000,http://localhost:8000
-EMAIL_BACKEND=django.core.mail.backends.locmem.EmailBackend
 ```
 
 5. Apply migrations:
@@ -49,10 +48,8 @@ python manage.py runserver
 
 ## Contact flow
 
-- Valid contact submissions are stored in the database.
-- Submissions are visible in Django admin.
-- A notification email is sent using Django's configured email backend.
-- A honeypot field and IP-based rate limit protect the endpoint from low-effort abuse.
+- The primary contact CTA opens a WhatsApp conversation via a configurable `WHATSAPP_CONTACT_URL` env var.
+- `ContactSubmission` records are available in the database and admin but are not wired to an active form endpoint.
 
 ## Production checklist
 
@@ -65,13 +62,6 @@ SECRET_KEY=replace-with-a-real-secret
 ALLOWED_HOSTS=your-domain.com,www.your-domain.com
 CSRF_TRUSTED_ORIGINS=https://your-domain.com,https://www.your-domain.com
 WHATSAPP_CONTACT_URL=https://wa.me/254717157165?text=Hi%20Muko%2C%20I%27d%20like%20to%20talk%20about%20a%20project.
-EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
-EMAIL_HOST=smtp.example.com
-EMAIL_PORT=587
-EMAIL_HOST_USER=your-smtp-username
-EMAIL_HOST_PASSWORD=your-smtp-password
-EMAIL_USE_TLS=True
-DEFAULT_FROM_EMAIL=noreply@your-domain.com
 SECURE_SSL_REDIRECT=True
 SESSION_COOKIE_SECURE=True
 CSRF_COOKIE_SECURE=True
@@ -98,5 +88,5 @@ python manage.py createsuperuser
 ## Notes
 
 - The default local database is SQLite.
-- Frontend assets such as Tailwind, GSAP, Lucide, and Google Fonts are currently loaded from third-party CDNs.
+- Frontend assets such as Tailwind, GSAP, Lucide (pinned to 1.11.0), and Google Fonts are currently loaded from third-party CDNs.
 - Production mode fails fast if `SECRET_KEY` is left at the development default or if `ALLOWED_HOSTS` is empty.

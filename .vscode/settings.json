@@ -1,3 +1,5 @@
 {
-    "djlint.showInstallError": false
+    "djlint.showInstallError": false,
+    "python.defaultInterpreterPath": "${workspaceFolder}\\venv\\Scripts\\python.exe",
+    "python.terminal.activateEnvironment": true
 }

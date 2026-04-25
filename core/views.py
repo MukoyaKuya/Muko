@@ -18,7 +18,9 @@ class HomeView(TemplateView):
         if selected_filter not in valid_filters:
             selected_filter = FeaturedProject.FILTER_ALL
 
-        featured_projects = FeaturedProject.objects.filter(is_published=True)
+        featured_projects = FeaturedProject.objects.filter(
+            is_published=True
+        ).prefetch_related('gallery_images')
         if selected_filter != FeaturedProject.FILTER_ALL:
             featured_projects = featured_projects.filter(filter_group=selected_filter)
 
@@ -51,7 +53,7 @@ class ProjectDetailView(TemplateView):
         context = super().get_context_data(**kwargs)
         slug = kwargs['slug']
         try:
-            project = FeaturedProject.objects.get(slug=slug, is_published=True)
+            project = FeaturedProject.objects.prefetch_related('gallery_images').get(slug=slug, is_published=True)
         except FeaturedProject.DoesNotExist as exc:
             raise Http404('Project not found.') from exc
 

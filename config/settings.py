@@ -11,9 +11,13 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 import os
+import sys
 from pathlib import Path
 
 from django.core.exceptions import ImproperlyConfigured
+
+_SAFE_SUBCOMMANDS = {'test', 'check'}
+_is_safe_subcommand = bool(sys.argv[1:2] and sys.argv[1] in _SAFE_SUBCOMMANDS)
 
 
 def load_dotenv(dotenv_path):
@@ -79,10 +83,10 @@ if IS_PRODUCTION and SECRET_KEY == DEFAULT_SECRET_KEY:
 
 ALLOWED_HOSTS = get_list_env(
     'ALLOWED_HOSTS',
-    ['127.0.0.1', 'localhost'] if DEBUG else [],
+    ['127.0.0.1', 'localhost'] if (DEBUG or _is_safe_subcommand) else [],
 )
 
-if not DEBUG and not ALLOWED_HOSTS:
+if not DEBUG and not ALLOWED_HOSTS and not _is_safe_subcommand:
     raise ImproperlyConfigured('ALLOWED_HOSTS must be configured when DEBUG is disabled.')
 
 
@@ -178,6 +182,9 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 STORAGES = {
     'default': {

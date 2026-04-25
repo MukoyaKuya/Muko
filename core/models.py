@@ -1,4 +1,5 @@
 from django.db import models
+from django.templatetags.static import static
 
 
 class FeaturedProject(models.Model):
@@ -24,7 +25,18 @@ class FeaturedProject(models.Model):
 	summary = models.TextField()
 	hero_image = models.CharField(
 		max_length=255,
-		help_text='Path relative to static/, for example img/work1.png',
+		blank=True,
+		help_text='Path relative to static/, for example img/work1.png (legacy — prefer uploading below).',
+	)
+	hero_image_upload = models.ImageField(
+		upload_to='projects/',
+		blank=True,
+		null=True,
+		help_text='Upload a project screenshot or hero image. Overrides the legacy path above.',
+	)
+	live_url = models.URLField(
+		blank=True,
+		help_text='Optional live URL of the website, e.g. https://example.com',
 	)
 	challenge = models.TextField()
 	approach = models.TextField()
@@ -50,6 +62,33 @@ class FeaturedProject(models.Model):
 	def stack_list(self):
 		return [item.strip() for item in self.stack.splitlines() if item.strip()]
 
+	def get_all_images(self):
+		"""Return all images: hero first (upload preferred, legacy fallback), then gallery images in order."""
+		images = []
+		if self.hero_image_upload:
+			images.append(self.hero_image_upload.url)
+		elif self.hero_image:
+			images.append(static(self.hero_image))
+		images += [img.image.url for img in self.gallery_images.all()]
+		return images
+
+
+class ProjectImage(models.Model):
+	project = models.ForeignKey(
+		FeaturedProject,
+		on_delete=models.CASCADE,
+		related_name='gallery_images',
+	)
+	image = models.ImageField(upload_to='projects/gallery/')
+	caption = models.CharField(max_length=200, blank=True)
+	display_order = models.PositiveIntegerField(default=0)
+
+	class Meta:
+		ordering = ['display_order']
+
+	def __str__(self):
+		return f'{self.project.title} — image {self.display_order}'
+
 
 class ShopItem(models.Model):
 	title = models.CharField(max_length=150)
@@ -58,9 +97,16 @@ class ShopItem(models.Model):
 		max_length=50,
 		help_text='Lucide icon name, for example shopping-bag, package, or shirt.',
 	)
+	image_upload = models.ImageField(
+		upload_to='shop/',
+		blank=True,
+		null=True,
+		help_text='Upload a shop image. This is used first when present.',
+	)
 	image_path = models.CharField(
 		max_length=255,
-		help_text='Path relative to static/, for example img/work3.png',
+		blank=True,
+		help_text='Optional legacy path relative to static/, for example img/work3.png.',
 	)
 	link_url = models.CharField(
 		max_length=255,
@@ -79,10 +125,18 @@ class ShopItem(models.Model):
 	def __str__(self):
 		return self.title
 
+	@property
+	def image_url(self):
+		if self.image_upload:
+			return self.image_upload.url
+		if self.image_path:
+			return static(self.image_path)
+		return ''
+
 
 class ShopSectionSettings(models.Model):
 	eyebrow = models.CharField(max_length=80, default='Shop')
-	heading = models.CharField(max_length=200, default='Digital Goods & Garments')
+	heading = models.CharField(max_length=200, default='Karibu My Shop')
 	heading_highlight = models.CharField(max_length=120, default='& Garments')
 	description = models.TextField(
 		default='A curated storefront is coming soon for premium website templates, practical digital assets, and limited garment drops built around the same design language as the client work.',

@@ -157,6 +157,11 @@ class ShopSectionSettings(models.Model):
 	def __str__(self):
 		return 'Shop Section Settings'
 
+	def save(self, *args, **kwargs):
+		if not self.pk and ShopSectionSettings.objects.exists():
+			raise ValueError('Only one ShopSectionSettings instance is allowed.')
+		super().save(*args, **kwargs)
+
 
 class ContactSubmission(models.Model):
 	name = models.CharField(max_length=100)

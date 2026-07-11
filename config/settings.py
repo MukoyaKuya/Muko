@@ -66,6 +66,7 @@ WHATSAPP_CONTACT_URL = os.getenv(
     'WHATSAPP_CONTACT_URL',
     'https://wa.me/254717157165?text=Hi%20Muko%2C%20I%27d%20like%20to%20talk%20about%20a%20project.',
 )
+WHATSAPP_PHONE_DISPLAY = os.getenv('WHATSAPP_PHONE_DISPLAY', '0717 157 165')
 
 
 # Quick-start development settings - unsuitable for production
@@ -137,12 +138,38 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+DATABASE_URL = os.getenv('DATABASE_URL')
+if DATABASE_URL:
+    import re
+    match = re.match(
+        r'(?P<engine>\w+)://(?:(?P<user>[^:]+)(?::(?P<pass>[^@]+))?@)?(?P<host>[^:/]+)(?::(?P<port>\d+))?/(?P<name>.+)',
+        DATABASE_URL,
+    )
+    if match:
+        engine_map = {
+            'postgresql': 'django.db.backends.postgresql',
+            'postgres': 'django.db.backends.postgresql',
+            'mysql': 'django.db.backends.mysql',
+        }
+        DATABASES = {
+            'default': {
+                'ENGINE': engine_map.get(match.group('engine'), 'django.db.backends.postgresql'),
+                'NAME': match.group('name'),
+                'USER': match.group('user') or '',
+                'PASSWORD': match.group('pass') or '',
+                'HOST': match.group('host'),
+                'PORT': match.group('port') or '',
+            }
+        }
+    else:
+        raise ImproperlyConfigured(f'Invalid DATABASE_URL format: {DATABASE_URL}')
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
 
 
 # Password validation
@@ -185,7 +212,6 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 STORAGES = {
     'default': {
         'BACKEND': 'django.core.files.storage.FileSystemStorage',
@@ -229,5 +255,6 @@ EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
 EMAIL_USE_TLS = get_bool_env('EMAIL_USE_TLS', False)
 EMAIL_USE_SSL = get_bool_env('EMAIL_USE_SSL', False)
 DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'noreply@muko.local')
+CONTACT_NOTIFICATION_EMAIL = os.getenv('CONTACT_NOTIFICATION_EMAIL', 'deltonmukoyakuya@gmail.com')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

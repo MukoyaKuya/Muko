@@ -49,7 +49,8 @@ python manage.py runserver
 ## Contact flow
 
 - The primary contact CTA opens a WhatsApp conversation via a configurable `WHATSAPP_CONTACT_URL` env var.
-- `ContactSubmission` records are available in the database and admin but are not wired to an active form endpoint.
+- The homepage contact form posts to `/contact/` with HTMX and stores valid `ContactSubmission` records for admin review.
+- The contact form includes a hidden honeypot field to reject simple bot submissions without adding friction for visitors.
 
 ## Production checklist
 

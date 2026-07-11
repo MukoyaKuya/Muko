@@ -1,75 +1,45 @@
 {% load static %}
-<div id="featured-projects-panel">
-    <div class="flex gap-2 md:gap-4 overflow-x-auto pb-2 md:pb-0">
+<div id="featured-projects-panel" class="transition-all duration-300" aria-live="polite">
+    <div class="flex gap-2 overflow-x-auto pb-2 md:gap-3 md:pb-0" aria-label="Filter featured projects">
         {% for filter_option in project_filters %}
-        <a
-            href="{% url 'home' %}{% if filter_option.value != 'all' %}?category={{ filter_option.value }}{% endif %}#work"
-            hx-get="{% url 'home' %}{% if filter_option.value != 'all' %}?category={{ filter_option.value }}{% endif %}"
-            hx-target="#featured-projects-panel"
-            hx-swap="outerHTML"
-            hx-push-url="true"
-            class="whitespace-nowrap px-6 py-2 border rounded-full text-[10px] tracking-widest uppercase transition-colors {% if selected_project_filter == filter_option.value %}border-white/10 text-muko-red font-bold{% else %}border-white/5 text-white/40 hover:text-white{% endif %}"
-        >{{ filter_option.label }}</a>
+        <a href="{% url 'home' %}{% if filter_option.value != 'all' %}?category={{ filter_option.value }}{% endif %}#work"
+           hx-get="{% url 'home' %}{% if filter_option.value != 'all' %}?category={{ filter_option.value }}{% endif %}"
+           hx-target="#featured-projects-panel" hx-swap="outerHTML" hx-push-url="true"
+           {% if selected_project_filter == filter_option.value %}aria-current="true"{% endif %}
+           class="whitespace-nowrap rounded-full border px-5 py-2.5 text-[9px] font-semibold uppercase tracking-[0.24em] transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-muko-red md:px-7 md:text-[10px] {% if selected_project_filter == filter_option.value %}border-muko-red bg-muko-red/10 text-muko-red{% else %}border-white/15 text-white/60 hover:border-white/40 hover:text-white{% endif %}">{{ filter_option.label }}</a>
         {% endfor %}
     </div>
-
-    <div class="mt-12 grid grid-cols-1 gap-12 md:grid-cols-2">
+    <div class="mt-8 space-y-8 md:mt-10 md:space-y-12">
         {% for project in featured_projects %}
         {% with all_images=project.get_all_images %}
-        <div class="work-item group cursor-pointer">
-            <!-- Image card: hover scrolls preview top→bottom; click opens lightbox -->
-            {% if all_images %}
-            {{ all_images|json_script:forloop.counter }}
-            <div class="relative mb-6 aspect-[16/10] overflow-hidden rounded-2xl bg-white/5 cursor-zoom-in"
-                 role="button"
-                 tabindex="0"
-                 aria-label="View {{ project.title }} screenshots"
-                 onclick="openProjectLightbox(JSON.parse(document.getElementById('{{ forloop.counter }}').textContent), 0)"
-                 onkeydown="if(event.key==='Enter'||event.key===' ')openProjectLightbox(JSON.parse(document.getElementById('{{ forloop.counter }}').textContent), 0)">
-                <img src="{{ all_images.0 }}"
-                     alt="{{ project.title }}"
-                     class="project-thumb h-full w-full object-cover grayscale transition-[filter] duration-700 group-hover:grayscale-0">
-                <div class="absolute inset-0 bg-muko-black/20 transition-colors group-hover:bg-transparent pointer-events-none"></div>
-                <!-- Expand hint (bottom-left) -->
-                <span class="pointer-events-none absolute bottom-4 left-4 flex items-center gap-1.5 px-3 py-1.5 bg-black/60 backdrop-blur-sm rounded-full text-[9px] tracking-widest uppercase text-white/60 opacity-0 group-hover:opacity-100 transition-opacity duration-200" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
-                    {% if all_images|length > 1 %}{{ all_images|length }} images{% else %}Full view{% endif %}
-                </span>
-                <!-- Live Site link (must stop click from bubbling to lightbox) -->
-                {% if project.live_url %}
-                <a href="{{ project.live_url }}" target="_blank" rel="noreferrer noopener"
-                   onclick="event.stopPropagation()"
-                   class="absolute top-4 right-4 flex items-center gap-1.5 px-3 py-1.5 bg-black/70 backdrop-blur-sm rounded-full text-[9px] tracking-widest uppercase text-white/80 hover:text-white hover:bg-muko-red transition-all duration-200 opacity-0 group-hover:opacity-100"
-                   aria-label="Visit {{ project.title }} live site">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-                    Live Site
-                </a>
+        <article class="work-item group grid overflow-hidden rounded-[1.75rem] border border-white/10 bg-white/[0.035] transition-colors hover:border-white/20 lg:grid-cols-[minmax(0,1.35fr)_minmax(20rem,0.65fr)]">
+            <div class="relative min-h-[17rem] overflow-hidden bg-white/5 sm:min-h-[22rem] lg:min-h-[31rem] {% if forloop.counter|divisibleby:2 %}lg:order-2{% endif %}">
+                {% if all_images %}
+                {{ all_images|json_script:forloop.counter }}
+                <button type="button" class="absolute inset-0 z-10 cursor-zoom-in text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-3px] focus-visible:outline-muko-red" aria-label="View {{ project.title }} screenshots" onclick="openProjectLightbox(JSON.parse(document.getElementById('{{ forloop.counter }}').textContent), 0)">
+                    <img src="{{ all_images.0 }}" alt="{{ project.title }} project preview" class="project-thumb h-full w-full object-cover grayscale transition-[filter,transform] duration-700 group-hover:scale-[1.015] group-hover:grayscale-0">
+                    <span class="absolute bottom-4 left-4 flex items-center gap-2 rounded-full border border-white/10 bg-black/75 px-3 py-2 text-[9px] uppercase tracking-[0.2em] text-white/80 backdrop-blur-sm md:bottom-6 md:left-6"><i data-lucide="expand" class="h-3.5 w-3.5"></i>{% if all_images|length > 1 %}{{ all_images|length }} images{% else %}Full view{% endif %}</span>
+                </button>
+                {% else %}
+                <div class="flex h-full items-center justify-center text-xs uppercase tracking-widest text-white/30">No image</div>
                 {% endif %}
             </div>
-            {% else %}
-            <div class="relative mb-6 aspect-[16/10] overflow-hidden rounded-2xl bg-white/5 flex items-center justify-center">
-                <span class="text-white/20 text-xs uppercase tracking-widest">No image</span>
-            </div>
-            {% endif %}
-            <div class="flex items-start justify-between gap-4">
+            <div class="flex flex-col justify-between p-6 sm:p-8 lg:p-10 {% if forloop.counter|divisibleby:2 %}lg:order-1{% endif %}">
                 <div>
-                    <h4 class="mb-2 text-2xl font-bebas text-white">{{ project.title }}</h4>
-                    <p class="text-sm text-white/40">{{ project.category }}</p>
-                    <p class="mt-3 max-w-md text-sm leading-relaxed text-white/55">{{ project.card_summary }}</p>
+                    <div class="flex items-center justify-between gap-4"><p class="text-[10px] font-semibold uppercase tracking-[0.28em] text-muko-red">{{ project.category }}</p><span class="font-bebas text-3xl text-white/15">0{{ forloop.counter }}</span></div>
+                    <h4 class="mt-5 font-bebas text-4xl leading-none text-white md:text-5xl">{{ project.title }}</h4>
+                    <p class="mt-5 text-sm leading-7 text-white/65 md:text-base">{{ project.card_summary }}</p>
+                    <div class="mt-6 flex flex-wrap gap-2">{% for stack_item in project.stack_list|slice:':4' %}<span class="rounded-full border border-white/10 px-3 py-1.5 text-[9px] uppercase tracking-[0.18em] text-white/55">{{ stack_item }}</span>{% endfor %}</div>
                 </div>
-                <a href="{% url 'project_detail' project.slug %}" class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-white/10 transition-all duration-300 group-hover:border-muko-red group-hover:bg-muko-red" aria-label="Open the {{ project.title }} case study">
-                    <svg viewBox="0 0 24 24" aria-hidden="true" class="h-5 w-5 -translate-x-0.5 translate-y-0.5 scale-90 stroke-white opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:translate-y-0 group-hover:scale-100 group-hover:opacity-100" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M7 17 17 7"></path>
-                        <path d="M8 7h9v9"></path>
-                    </svg>
-                </a>
+                <div class="mt-8 flex flex-wrap gap-3">
+                    <a href="{% url 'project_detail' project.slug %}" class="inline-flex items-center gap-3 rounded-full bg-muko-red px-5 py-3 text-[10px] font-bold uppercase tracking-[0.2em] text-white transition-colors hover:bg-red-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-muko-red">View Case Study <i data-lucide="arrow-up-right" class="h-4 w-4"></i></a>
+                    {% if project.live_url %}<a href="{{ project.live_url }}" target="_blank" rel="noreferrer noopener" class="inline-flex items-center gap-3 rounded-full border border-white/15 px-5 py-3 text-[10px] font-bold uppercase tracking-[0.2em] text-white/75 transition-colors hover:border-white hover:text-white">Live Site <i data-lucide="external-link" class="h-4 w-4"></i></a>{% endif %}
+                </div>
             </div>
-        </div>
+        </article>
         {% endwith %}
         {% empty %}
-        <div class="md:col-span-2 rounded-3xl border border-dashed border-white/10 bg-white/5 p-10 text-center text-white/45">
-            No featured projects are published yet. Add them in the admin to populate this section.
-        </div>
+        <div class="rounded-3xl border border-dashed border-white/10 bg-white/5 p-8 text-center text-white/50">No featured projects are published yet. Add them in the admin to populate this section.</div>
         {% endfor %}
     </div>
 </div>

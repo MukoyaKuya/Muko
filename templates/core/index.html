@@ -15,7 +15,7 @@
 <section id="home" class="relative min-h-[100svh] md:h-screen w-full overflow-hidden bg-muko-black">
     <!-- Background Image with Overlay -->
     <div class="absolute inset-0 z-0 overflow-hidden">
-        <img id="hero-bg" src="{% static 'img/bg.png' %}" alt="Muko" class="w-full h-full object-cover object-[74%_center] opacity-85 grayscale contrast-125 md:object-center">
+        <img id="hero-bg" src="{% static 'img/bg.webp' %}" alt="Muko" class="w-full h-full object-cover object-[74%_center] opacity-85 grayscale contrast-125 md:object-center">
         <div id="hero-bg-veil" class="absolute inset-0 bg-muko-black pointer-events-none"></div>
         <div class="absolute inset-0 bg-gradient-to-r from-muko-black/88 via-muko-black/28 via-[28%] to-transparent md:bg-gradient-to-r md:from-muko-black md:via-muko-black/30 md:to-transparent"></div>
         <div class="absolute inset-0 bg-gradient-to-t from-muko-black/22 via-transparent to-transparent md:hidden"></div>
@@ -593,9 +593,9 @@
         .to(".hero-transition-spark", { opacity: 0, duration: 0.25 }, 0.72);
 
     gsap.fromTo("#skills",
-        { clipPath: "polygon(0 12%, 50% 0, 100% 12%, 100% 100%, 0 100%)", y: 70 },
+        { clipPath: "polygon(0 50px, 50% 0, 100% 50px, 100% 100%, 0 100%)", y: 70 },
         {
-            clipPath: "polygon(0 0, 50% 0, 100% 0, 100% 100%, 0 100%)",
+            clipPath: "polygon(0 0px, 50% 0, 100% 0px, 100% 100%, 0 100%)",
             y: 0,
             ease: "none",
             scrollTrigger: {

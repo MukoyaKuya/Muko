@@ -29,11 +29,12 @@ class FeaturedProject(models.Model):
 		blank=True,
 		help_text='Path relative to static/, for example img/work1.png (legacy — prefer uploading below).',
 	)
-	hero_image_upload = models.ImageField(
+	hero_image_upload = models.FileField(
 		upload_to='projects/',
 		blank=True,
 		null=True,
-		help_text='Upload a project screenshot or hero image. Overrides the legacy path above.',
+		validators=[FileExtensionValidator(['png', 'jpg', 'jpeg', 'webp', 'gif'])],
+		help_text='Upload a project screenshot or hero image. Overrides the legacy path above. Supports WebP, PNG, JPG.',
 	)
 	live_url = models.URLField(
 		blank=True,
@@ -80,7 +81,10 @@ class ProjectImage(models.Model):
 		on_delete=models.CASCADE,
 		related_name='gallery_images',
 	)
-	image = models.ImageField(upload_to='projects/gallery/')
+	image = models.FileField(
+		upload_to='projects/gallery/',
+		validators=[FileExtensionValidator(['png', 'jpg', 'jpeg', 'webp', 'gif'])],
+	)
 	caption = models.CharField(max_length=200, blank=True)
 	display_order = models.PositiveIntegerField(default=0)
 
@@ -98,11 +102,12 @@ class ShopItem(models.Model):
 		max_length=50,
 		help_text='Lucide icon name, for example shopping-bag, package, or shirt.',
 	)
-	image_upload = models.ImageField(
+	image_upload = models.FileField(
 		upload_to='shop/',
 		blank=True,
 		null=True,
-		help_text='Upload a shop image. This is used first when present.',
+		validators=[FileExtensionValidator(['png', 'jpg', 'jpeg', 'webp', 'gif'])],
+		help_text='Upload a shop image. This is used first when present. Supports WebP, PNG, JPG.',
 	)
 	image_path = models.CharField(
 		max_length=255,

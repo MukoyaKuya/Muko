@@ -1,3 +1,4 @@
+from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.templatetags.static import static
 
@@ -176,3 +177,85 @@ class ContactSubmission(models.Model):
 
 	def __str__(self):
 		return f'{self.name} <{self.email}>'
+
+
+class Visitor(models.Model):
+	"""An anonymized visitor record keyed by a one-way hash of the IP address."""
+
+	ip_hash = models.CharField(max_length=64, unique=True, db_index=True)
+	visit_count = models.PositiveBigIntegerField(default=1)
+	first_seen = models.DateTimeField(auto_now_add=True)
+	last_seen = models.DateTimeField()
+	last_path = models.CharField(max_length=255, blank=True)
+	user_agent = models.CharField(max_length=500, blank=True)
+
+	class Meta:
+		ordering = ['-last_seen']
+
+	def __str__(self):
+		return f'Visitor {self.ip_hash[:12]}…'
+
+	@property
+	def fingerprint(self):
+		return f'{self.ip_hash[:12]}…'
+
+
+class PortfolioSettings(models.Model):
+	cv_file = models.FileField(
+		upload_to='documents/',
+		validators=[FileExtensionValidator(['pdf'])],
+		help_text='Upload your current CV as a PDF.',
+	)
+	cv_label = models.CharField(max_length=40, default='View CV')
+	updated_at = models.DateTimeField(auto_now=True)
+
+	class Meta:
+		verbose_name = 'Portfolio Settings'
+		verbose_name_plural = 'Portfolio Settings'
+
+	def __str__(self):
+		return 'Portfolio Settings'
+
+	def save(self, *args, **kwargs):
+		if not self.pk and PortfolioSettings.objects.exists():
+			raise ValueError('Only one PortfolioSettings instance is allowed.')
+		super().save(*args, **kwargs)
+
+
+class SiteContentSettings(models.Model):
+	hero_eyebrow = models.CharField(max_length=80, default="Hello, I'm")
+	hero_description = models.CharField(
+		max_length=240,
+		default="Let's design and build digital experiences that convert, engage, and stand out.",
+	)
+	hero_cta_label = models.CharField(max_length=60, default='View My Work')
+	services_eyebrow = models.CharField(max_length=80, default='My Expertise')
+	services_heading = models.CharField(max_length=100, default='Services')
+	services_heading_highlight = models.CharField(max_length=100, default='& Solutions')
+	services_intro = models.CharField(
+		max_length=240,
+		default='Select a service to see what the engagement includes, how I approach it, and what you can expect.',
+	)
+	work_eyebrow = models.CharField(max_length=80, default='Selected Projects')
+	work_heading = models.CharField(max_length=100, default='Featured')
+	work_heading_highlight = models.CharField(max_length=100, default='Works')
+	contact_eyebrow = models.CharField(max_length=80, default='Get in touch')
+	contact_heading = models.CharField(max_length=100, default="Let's")
+	contact_heading_highlight = models.CharField(max_length=100, default='Collaborate')
+	contact_intro = models.TextField(
+		default="Have a project in mind? Looking for a partner to build something impactful? Message me on WhatsApp and let's start the conversation where it is fastest.",
+	)
+	footer_text = models.CharField(max_length=160, default='MUKO. Built with Passion.')
+	updated_at = models.DateTimeField(auto_now=True)
+
+	class Meta:
+		verbose_name = 'Site Content Settings'
+		verbose_name_plural = 'Site Content Settings'
+
+	def __str__(self):
+		return 'Site Content Settings'
+
+	def save(self, *args, **kwargs):
+		if not self.pk and SiteContentSettings.objects.exists():
+			raise ValueError('Only one SiteContentSettings instance is allowed.')
+		super().save(*args, **kwargs)

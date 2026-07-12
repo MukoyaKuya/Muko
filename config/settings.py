@@ -107,6 +107,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'core.middleware.VisitorTrackingMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -258,3 +259,6 @@ DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'noreply@muko.local')
 CONTACT_NOTIFICATION_EMAIL = os.getenv('CONTACT_NOTIFICATION_EMAIL', 'deltonmukoyakuya@gmail.com')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+VISITOR_TRACKING_COOLDOWN_SECONDS = get_int_env('VISITOR_TRACKING_COOLDOWN_SECONDS', 1800)
+TRUST_X_FORWARDED_FOR = get_bool_env('TRUST_X_FORWARDED_FOR', False)

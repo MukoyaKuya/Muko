@@ -35,110 +35,272 @@
     <!-- Hero Content -->
     <div class="hero-mobile-content relative z-10 flex min-h-[100svh] max-w-6xl flex-col items-end justify-end px-5 pb-28 pt-24 text-right md:h-full md:min-h-0 md:items-start md:justify-end md:px-24 md:pb-28 md:pt-0 md:text-left lg:px-40 lg:pb-32">
         <div class="hero-mobile-copy max-w-[10.5rem] md:max-w-none">
-            <h2 id="hero-hello" class="mb-0.5 font-script text-[2.2rem] text-muko-red sm:text-4xl md:mb-2 md:text-5xl lg:text-6xl">Hello, I'm</h2>
+            <h2 id="hero-hello" class="mb-0.5 font-script text-[2.2rem] text-muko-red sm:text-4xl md:mb-2 md:text-5xl lg:text-6xl">{{ site_content.hero_eyebrow|default:"Hello, I'm" }}</h2>
             <h1 id="hero-title" class="mb-3 font-bebas text-[3.9rem] leading-[0.8] tracking-[0.01em] text-white sm:text-[6.2rem] md:mb-8 md:text-[10rem] md:leading-[0.85] md:tracking-tight lg:text-[14rem]">
                 <span class="muko-char inline-block">M</span><span class="muko-char inline-block">U</span><span class="muko-char inline-block">K</span><span class="muko-char inline-block">O</span>
             </h1>
 
             <p id="hero-sub" class="ml-auto max-w-[10rem] text-[0.8rem] font-light leading-[1.06] text-white/80 sm:max-w-xs md:ml-0 md:mb-12 md:max-w-xl md:text-lg md:leading-tight lg:text-2xl">
-                Let's design and build digital experiences <br class="hidden md:block">
-                that convert, engage, and stand out.
+                {{ site_content.hero_description|default:"Let's design and build digital experiences that convert, engage, and stand out." }}
             </p>
         </div>
 
         <div id="hero-cta" class="hero-mobile-cta mt-20 md:mt-0">
             <a href="#work" class="view-work-btn group inline-flex w-full max-w-[10rem] items-center justify-between gap-4 rounded-sm border border-white/20 bg-black/10 px-4 py-3 text-[8px] font-semibold uppercase tracking-[0.28em] hover:border-white sm:w-auto sm:min-w-[15rem] sm:max-w-none sm:justify-start md:gap-6 md:border-white/40 md:bg-transparent md:px-10 md:py-4 md:text-[10px] md:tracking-widest">
-                View My Work
+                {{ site_content.hero_cta_label|default:"View My Work" }}
                 <i data-lucide="arrow-right" class="h-4 w-4 text-muko-red group-hover:translate-x-2 transition-transform md:h-5 md:w-5"></i>
             </a>
         </div>
     </div>
 
 
-</section>
 
-<!-- Services Section (Bento Grid) -->
-<section id="skills" class="border-t border-white/5 bg-muko-black px-5 py-16 md:px-20 md:py-20 lg:px-32">
-    <div class="max-w-7xl mx-auto">
-        <div class="mb-9 md:mb-16">
-            <h3 class="mb-1.5 font-script text-[1.7rem] text-muko-red md:text-3xl">My Expertise</h3>
-            <h2 class="font-bebas text-[2.8rem] leading-[0.9] tracking-tight text-white md:text-5xl lg:text-7xl">Services <span class="text-white/35">& Solutions</span></h2>
+    <div id="hero-transition" class="pointer-events-none absolute inset-x-0 bottom-0 z-20 h-28 overflow-hidden" aria-hidden="true">
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-black"></div>
+        <div class="hero-transition-beam absolute bottom-0 left-1/2 h-px w-0 -translate-x-1/2 bg-muko-red"></div>
+        <div class="hero-transition-flare absolute bottom-0 left-1/2 h-16 w-40 -translate-x-1/2 translate-y-1/2 rounded-full bg-muko-red/20 opacity-0 blur-3xl"></div>
+        <span class="hero-transition-spark hero-transition-spark-one"></span>
+        <span class="hero-transition-spark hero-transition-spark-two"></span>
+        <span class="hero-transition-spark hero-transition-spark-three"></span>
+    </div></section>
+
+<!-- Services Section (Interactive Grid) -->
+<section id="skills" class="border-t border-white/5 bg-muko-black px-5 py-14 md:px-20 md:py-14 lg:px-32">
+    <div class="mx-auto max-w-7xl">
+        <div class="mb-8 md:mb-10">
+            <h3 class="mb-1.5 font-script text-[1.7rem] text-muko-red md:text-3xl">{{ site_content.services_eyebrow|default:"My Expertise" }}</h3>
+            <h2 class="font-bebas text-[2.8rem] leading-[0.9] tracking-tight text-white md:text-5xl lg:text-7xl">{{ site_content.services_heading|default:"Services" }} <span class="text-white/35">{{ site_content.services_heading_highlight|default:"& Solutions" }}</span></h2>
+            <p class="mt-4 max-w-2xl text-sm text-white/55">{{ site_content.services_intro|default:"Select a service to see what the engagement includes, how I approach it, and what you can expect." }}</p>
         </div>
 
-        <div id="services-grid" class="grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-6 lg:grid-cols-4">
-            <!-- Web Development (Large Card) -->
-            <div class="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-6 transition-all duration-500 hover:border-muko-red/50 md:col-span-2 md:p-10 lg:col-span-2">
-                <div class="relative z-10">
-                    <i data-lucide="code-2" class="mb-4 h-10 w-10 text-muko-red md:mb-6 md:h-12 md:w-12"></i>
-                    <h4 class="mb-3 font-bebas text-[2rem] leading-none text-white md:mb-4 md:text-3xl">Web Development</h4>
-                    <p class="max-w-sm text-sm leading-relaxed text-white/65 md:text-base">
-                        Building high-performance, scalable web applications using modern stacks like Django, React, and HTMX.
-                    </p>
-                </div>
-                <div class="absolute bottom-0 right-0 p-5 opacity-10 transition-opacity group-hover:opacity-30 md:p-8">
-                    <i data-lucide="code-2" class="h-24 w-24 text-white md:h-32 md:w-32"></i>
-                </div>
-            </div>
+        <div id="services-grid" class="grid grid-cols-1 gap-4 md:grid-cols-6 md:gap-4">
+            <button type="button" data-service="web" aria-haspopup="dialog" class="service-card group md:col-span-2">
+                <span class="service-ember" aria-hidden="true"></span>
+                <span class="relative z-10 block text-left">
+                    <i data-lucide="code-2" class="mb-4 h-10 w-10 text-muko-red"></i>
+                    <span class="mb-3 block font-bebas text-[1.8rem] leading-none text-white">Web Development</span>
+                    <span class="block max-w-sm text-sm leading-relaxed text-white/65">Fast, scalable applications built around real business goals.</span>
+                    <span class="service-card-action">Explore service <i data-lucide="arrow-up-right" class="h-3.5 w-3.5"></i></span>
+                </span>
+                <i data-lucide="code-2" class="pointer-events-none absolute bottom-4 right-5 h-24 w-24 text-white opacity-[0.06] transition-all duration-500 group-hover:scale-110 group-hover:opacity-[0.12]"></i>
+            </button>
 
-            <!-- UI/UX Design -->
-            <div class="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-6 transition-all duration-500 hover:border-muko-red/50 md:p-10">
-                <div class="relative z-10">
-                    <i data-lucide="framer" class="mb-4 h-9 w-9 text-muko-red md:mb-6 md:h-10 md:w-10"></i>
-                    <h4 class="mb-3 font-bebas text-[2rem] leading-none text-white md:mb-4 md:text-3xl">UI/UX Design</h4>
-                    <p class="text-sm leading-relaxed text-white/65">
-                        Creating intuitive and visually stunning interfaces that prioritize user experience.
-                    </p>
-                </div>
-            </div>
+            <button type="button" data-service="design" aria-haspopup="dialog" class="service-card group md:col-span-2">
+                <span class="service-ember" aria-hidden="true"></span>
+                <span class="relative z-10 block text-left">
+                    <i data-lucide="pen-tool" class="mb-4 h-9 w-9 text-muko-red"></i>
+                    <span class="mb-3 block font-bebas text-[1.8rem] leading-none text-white">UI/UX Design</span>
+                    <span class="block text-sm leading-relaxed text-white/65">Clear, intuitive interfaces designed around how people behave.</span>
+                    <span class="service-card-action">Explore service <i data-lucide="arrow-up-right" class="h-3.5 w-3.5"></i></span>
+                </span>
+            </button>
 
-            <!-- Digital Platforms -->
-            <div class="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-6 transition-all duration-500 hover:border-muko-red/50 md:p-10">
-                <div class="relative z-10">
-                    <i data-lucide="layout-grid" class="mb-4 h-9 w-9 text-muko-red md:mb-6 md:h-10 md:w-10"></i>
-                    <h4 class="mb-3 font-bebas text-[2rem] leading-none text-white md:mb-4 md:text-3xl">Digital Platforms</h4>
-                    <p class="text-sm leading-relaxed text-white/65">
-                        End-to-end digital transformation for businesses looking to scale online.
-                    </p>
-                </div>
-            </div>
+            <button type="button" data-service="platforms" aria-haspopup="dialog" class="service-card group md:col-span-2">
+                <span class="service-ember" aria-hidden="true"></span>
+                <span class="relative z-10 block text-left">
+                    <i data-lucide="layout-grid" class="mb-4 h-9 w-9 text-muko-red"></i>
+                    <span class="mb-3 block font-bebas text-[1.8rem] leading-none text-white">Digital Platforms</span>
+                    <span class="block text-sm leading-relaxed text-white/65">Connected digital systems that help organizations operate and grow.</span>
+                    <span class="service-card-action">Explore service <i data-lucide="arrow-up-right" class="h-3.5 w-3.5"></i></span>
+                </span>
+            </button>
 
-            <!-- Cloud Solutions -->
-            <div class="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-6 transition-all duration-500 hover:border-muko-red/50 lg:col-span-2 md:p-10">
-                <div class="relative z-10 flex flex-col justify-between gap-4 md:flex-row md:items-center md:gap-6">
-                    <div>
-                        <i data-lucide="cloud" class="mb-4 h-10 w-10 text-muko-red md:mb-6 md:h-12 md:w-12"></i>
-                        <h4 class="mb-3 font-bebas text-[2rem] leading-none text-white md:mb-4 md:text-3xl">Cloud Infrastructure</h4>
-                        <p class="max-w-md text-sm leading-relaxed text-white/65 md:text-base">
-                            Deploying robust and secure cloud environments to ensure your platform is always available.
-                        </p>
-                    </div>
-                    <div class="flex flex-wrap gap-2 md:gap-4">
-                        <div class="rounded-full bg-white/5 px-3 py-1.5 text-[9px] uppercase tracking-[0.28em] text-white/60 md:px-4 md:py-2 md:text-[10px] md:tracking-widest">AWS</div>
-                        <div class="rounded-full bg-white/5 px-3 py-1.5 text-[9px] uppercase tracking-[0.28em] text-white/60 md:px-4 md:py-2 md:text-[10px] md:tracking-widest">Azure</div>
-                    </div>
-                </div>
-            </div>
+            <button type="button" data-service="cloud" aria-haspopup="dialog" class="service-card group md:col-span-3">
+                <span class="service-ember" aria-hidden="true"></span>
+                <span class="relative z-10 flex h-full flex-col justify-between gap-5 text-left md:flex-row md:items-end">
+                    <span>
+                        <i data-lucide="cloud" class="mb-4 h-10 w-10 text-muko-red"></i>
+                        <span class="mb-3 block font-bebas text-[1.8rem] leading-none text-white">Cloud Infrastructure</span>
+                        <span class="block max-w-md text-sm leading-relaxed text-white/65">Secure, observable environments built to deploy reliably and scale safely.</span>
+                        <span class="service-card-action">Explore service <i data-lucide="arrow-up-right" class="h-3.5 w-3.5"></i></span>
+                    </span>
+                    <span class="flex gap-2"><span class="service-tag">AWS</span><span class="service-tag">Azure</span></span>
+                </span>
+            </button>
 
-            <!-- SEO & Optimization -->
-            <div class="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-6 transition-all duration-500 hover:border-muko-red/50 md:col-span-2 md:p-10">
-                <div class="relative z-10">
-                    <i data-lucide="search" class="mb-4 h-9 w-9 text-muko-red md:mb-6 md:h-10 md:w-10"></i>
-                    <h4 class="mb-3 font-bebas text-[2rem] leading-none text-white md:mb-4 md:text-3xl">Performance & SEO</h4>
-                    <p class="text-sm leading-relaxed text-white/65 md:text-base">
-                        Optimizing every pixel and line of code for maximum visibility and lightning-fast load times.
-                    </p>
-                </div>
-            </div>
+            <button type="button" data-service="seo" aria-haspopup="dialog" class="service-card group md:col-span-3">
+                <span class="service-ember" aria-hidden="true"></span>
+                <span class="relative z-10 block text-left">
+                    <i data-lucide="search" class="mb-4 h-9 w-9 text-muko-red"></i>
+                    <span class="mb-3 block font-bebas text-[1.8rem] leading-none text-white">Performance & SEO</span>
+                    <span class="block max-w-xl text-sm leading-relaxed text-white/65">Technical improvements that make your site faster, easier to find, and easier to use.</span>
+                    <span class="service-card-action">Explore service <i data-lucide="arrow-up-right" class="h-3.5 w-3.5"></i></span>
+                </span>
+            </button>
         </div>
     </div>
 </section>
+
+<div id="service-modal" class="fixed inset-0 z-[300] hidden items-center justify-center p-4 md:p-8" role="dialog" aria-modal="true" aria-labelledby="service-modal-title" aria-describedby="service-modal-description">
+    <div data-service-backdrop class="absolute inset-0 bg-black/85 opacity-0 backdrop-blur-md"></div>
+    <div data-service-panel class="relative w-full max-w-2xl translate-y-8 scale-95 overflow-hidden rounded-[1.75rem] border border-muko-red/35 bg-[#0c0c0c] opacity-0 shadow-[0_0_100px_rgba(255,49,49,0.18)]">
+        <div class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-muko-red to-transparent"></div>
+        <button type="button" data-service-close class="absolute right-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/65 transition-all hover:rotate-90 hover:border-muko-red hover:text-muko-red focus-visible:outline focus-visible:outline-2 focus-visible:outline-muko-red" aria-label="Close service details">
+            <i data-lucide="x" class="h-5 w-5"></i>
+        </button>
+        <div class="p-6 sm:p-8 md:p-10">
+            <div class="flex h-12 w-12 items-center justify-center rounded-2xl border border-muko-red/25 bg-muko-red/10 text-muko-red"><span data-service-icon><i data-lucide="code-2" class="h-6 w-6"></i></span></div>
+            <p class="mt-6 text-[10px] font-semibold uppercase tracking-[0.32em] text-muko-red">Service overview</p>
+            <h3 id="service-modal-title" class="mt-3 pr-12 font-bebas text-4xl leading-none text-white md:text-5xl"></h3>
+            <p id="service-modal-description" class="mt-4 text-sm leading-7 text-white/65 md:text-base"></p>
+            <div class="mt-7 grid gap-6 sm:grid-cols-2">
+                <div>
+                    <h4 class="text-[10px] font-semibold uppercase tracking-[0.25em] text-white/45">What it entails</h4>
+                    <ul data-service-includes class="mt-3 space-y-2.5"></ul>
+                </div>
+                <div>
+                    <h4 class="text-[10px] font-semibold uppercase tracking-[0.25em] text-white/45">Typical outcomes</h4>
+                    <ul data-service-outcomes class="mt-3 space-y-2.5"></ul>
+                </div>
+            </div>
+            <a href="#contact" data-service-cta class="mt-8 inline-flex items-center gap-3 rounded-full bg-muko-red px-5 py-3 text-[10px] font-bold uppercase tracking-[0.22em] text-white transition-colors hover:bg-red-600">Discuss this service <i data-lucide="arrow-right" class="h-4 w-4"></i></a>
+        </div>
+    </div>
+</div>
+
+<style>
+    #skills {
+        position: relative;
+        z-index: 25;
+        transform-origin: center top;
+        will-change: clip-path, transform;
+    }
+    #skills::before {
+        content: "";
+        position: absolute;
+        inset: 0 0 auto;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(255,49,49,.9), transparent);
+        box-shadow: 0 0 25px rgba(255,49,49,.6);
+        opacity: .7;
+    }
+    .hero-transition-beam {
+        box-shadow: 0 0 8px #ff3131, 0 0 28px rgba(255,49,49,.85), 0 0 60px rgba(255,49,49,.35);
+    }
+    .hero-transition-spark {
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        width: 3px;
+        height: 3px;
+        border-radius: 50%;
+        background: #fff5df;
+        opacity: 0;
+        box-shadow: 0 0 6px #fff, 0 0 14px #ff633f, 0 0 28px #ff3131;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        #skills { clip-path: none !important; transform: none !important; }
+        #hero-transition { display: none; }
+    }
+</style>
+
+<style>
+    .service-card {
+        position: relative;
+        min-height: 14rem;
+        overflow: hidden;
+        border: 1px solid rgba(255,255,255,.11);
+        border-radius: 1rem;
+        background: rgba(255,255,255,.035);
+        padding: 1.5rem;
+        cursor: pointer;
+        isolation: isolate;
+        transition: transform .4s cubic-bezier(.2,.8,.2,1), background-color .4s, box-shadow .4s, border-color .4s;
+    }
+    .service-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        padding: 1px;
+        border-radius: inherit;
+        background: conic-gradient(from var(--service-angle, 0deg), transparent 0 72%, rgba(255,49,49,.18) 78%, #ff3131 88%, #ff8a52 92%, transparent 100%);
+        -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        opacity: 0;
+        transition: opacity .3s;
+        pointer-events: none;
+    }
+    .service-card:hover,
+    .service-card:focus-visible,
+    .service-card.is-scroll-active {
+        transform: translateY(-5px);
+        border-color: rgba(255,49,49,.38);
+        background: rgba(255,255,255,.055);
+        box-shadow: 0 22px 60px rgba(0,0,0,.45), 0 0 30px rgba(255,49,49,.08);
+        outline: none;
+    }
+    .service-card:hover::before,
+    .service-card:focus-visible::before,
+    .service-card.is-scroll-active::before {
+        opacity: 1;
+        animation: service-fire-border 1.7s linear infinite;
+    }
+    .service-ember {
+        position: absolute;
+        z-index: 4;
+        width: 7px;
+        height: 7px;
+        border-radius: 999px;
+        background: #fff3dd;
+        box-shadow: 0 0 5px #fff, 0 0 12px #ff7138, 0 0 24px #ff3131, -8px 0 18px rgba(255,49,49,.9);
+        opacity: 0;
+        offset-path: inset(2px round 15px);
+        pointer-events: none;
+    }
+    .service-card:hover .service-ember,
+    .service-card:focus-visible .service-ember,
+    .service-card.is-scroll-active .service-ember {
+        opacity: 1;
+        animation: service-ember-run 1.7s linear infinite;
+    }
+    .service-card-action {
+        display: flex;
+        align-items: center;
+        gap: .45rem;
+        margin-top: 1.15rem;
+        color: rgba(255,49,49,.9);
+        font-size: .58rem;
+        font-weight: 700;
+        letter-spacing: .2em;
+        text-transform: uppercase;
+        opacity: .65;
+        transform: translateY(4px);
+        transition: opacity .3s, transform .3s;
+    }
+    .service-card:hover .service-card-action,
+    .service-card:focus-visible .service-card-action,
+    .service-card.is-scroll-active .service-card-action { opacity: 1; transform: translateY(0); }
+    .service-tag { border-radius:999px; background:rgba(255,255,255,.05); padding:.45rem .8rem; font-size:.58rem; letter-spacing:.18em; color:rgba(255,255,255,.55); }
+    #service-modal.is-open { display:flex; }
+    @property --service-angle { syntax:"<angle>"; initial-value:0deg; inherits:false; }
+    @keyframes service-fire-border { to { --service-angle: 360deg; } }
+    @keyframes service-ember-run { from { offset-distance:0%; } to { offset-distance:100%; } }
+    @media (hover: none) {
+        .service-card:hover:not(.is-scroll-active) {
+            transform: none;
+            border-color: rgba(255,255,255,.11);
+            background: rgba(255,255,255,.035);
+            box-shadow: none;
+        }
+        .service-card:hover:not(.is-scroll-active)::before { opacity: 0; animation: none; }
+        .service-card:hover:not(.is-scroll-active) .service-ember { opacity: 0; animation: none; }
+        .service-card:hover:not(.is-scroll-active) .service-card-action { opacity: .65; transform: translateY(4px); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .service-card, .service-card::before, .service-ember, [data-service-panel], [data-service-backdrop] { animation:none !important; transition:none !important; }
+        .service-card:hover, .service-card:focus-visible, .service-card.is-scroll-active { transform:none; }
+        .service-card:hover .service-ember, .service-card:focus-visible .service-ember, .service-card.is-scroll-active .service-ember { opacity:0; }
+    }
+</style>
 
 <!-- Work Section -->
 <section id="work" class="bg-muko-black px-5 py-16 md:px-20 md:py-20 lg:px-32">
     <div class="max-w-7xl mx-auto">
         <div class="mb-9 md:mb-16">
-                <h3 class="mb-1.5 font-script text-[1.7rem] text-muko-red md:text-3xl">Selected Projects</h3>
-                <h2 class="font-bebas text-[2.8rem] leading-[0.9] tracking-tight text-white md:text-5xl lg:text-7xl">Featured <span class="text-white/35">Works</span></h2>
+                <h3 class="mb-1.5 font-script text-[1.7rem] text-muko-red md:text-3xl">{{ site_content.work_eyebrow|default:"Selected Projects" }}</h3>
+                <h2 class="font-bebas text-[2.8rem] leading-[0.9] tracking-tight text-white md:text-5xl lg:text-7xl">{{ site_content.work_heading|default:"Featured" }} <span class="text-white/35">{{ site_content.work_heading_highlight|default:"Works" }}</span></h2>
             </div>
 
         {% include 'core/partials/featured_projects.html' %}
@@ -146,21 +308,21 @@
 </section>
 
 <!-- Shop Section -->
-<section id="shop" class="border-t border-white/5 bg-muko-black px-5 py-16 md:px-20 md:py-20 lg:px-32">
+<section id="shop" class="border-t border-white/5 bg-muko-black px-5 py-14 md:px-20 md:py-12 lg:px-32">
     <div class="mx-auto max-w-7xl">
         {% with section=shop_section %}
-        <div class="mb-9 md:mb-16">
+        <div class="mb-8 md:mb-9">
             <h3 class="mb-1.5 font-script text-[1.7rem] text-muko-red md:text-3xl">{{ section.eyebrow|default:'Shop' }}</h3>
             <h2 class="font-bebas text-[2.8rem] leading-[0.9] tracking-tight text-white md:text-5xl lg:text-7xl">{{ section.heading|default:'Digital Goods' }} <span class="text-white/35">{{ section.heading_highlight|default:'& Garments' }}</span></h2>
-            <p class="mt-4 max-w-xl text-sm leading-relaxed text-white/55 md:mt-6 md:max-w-2xl md:text-lg">
+            <p class="mt-4 max-w-xl text-sm leading-relaxed text-white/55 md:mt-4 md:max-w-2xl md:text-base">
                 {{ section.description|default:'A curated storefront is coming soon for premium website templates, practical digital assets, and limited garment drops built around the same design language as the client work.' }}
             </p>
         </div>
 
-        <div class="grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-6">
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-4">
             {% for item in shop_items %}
-            <article class="group overflow-hidden rounded-[1.75rem] border border-white/10 bg-white/5 transition-all duration-300 hover:-translate-y-1 hover:border-muko-red/50 hover:shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
-                <div class="relative aspect-[4/3] overflow-hidden border-b border-white/10 bg-white/5">
+            <article class="group overflow-hidden rounded-2xl border border-white/10 bg-white/5 transition-all duration-300 hover:-translate-y-1 hover:border-muko-red/50 hover:shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
+                <div class="relative aspect-[16/9] overflow-hidden border-b border-white/10 bg-white/5">
                     {% if item.image_url %}
                     <img src="{{ item.image_url }}" alt="{{ item.title }}" class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105">
                     {% else %}
@@ -168,16 +330,16 @@
                         Add an image for this item in admin.
                     </div>
                     {% endif %}
-                    <div class="absolute left-4 top-4 flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-black/50 backdrop-blur-sm md:left-6 md:top-6 md:h-12 md:w-12">
-                        <i data-lucide="{{ item.icon }}" class="h-5 w-5 text-muko-red md:h-6 md:w-6"></i>
+                    <div class="absolute left-4 top-4 flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-black/50 backdrop-blur-sm md:left-5 md:top-5 md:h-10 md:w-10">
+                        <i data-lucide="{{ item.icon }}" class="h-5 w-5 text-muko-red md:h-5 md:w-5"></i>
                     </div>
                 </div>
-                <div class="p-6 md:p-8">
+                <div class="p-5 md:p-5">
                     <p class="text-[9px] uppercase tracking-[0.28em] text-white/35 md:text-[10px] md:tracking-[0.35em]">{{ item.category }}</p>
-                    <h4 class="mt-3 font-bebas text-[2rem] leading-none text-white md:mt-4 md:text-3xl">{{ item.title }}</h4>
-                    <p class="mt-3 text-sm leading-relaxed text-white/60 md:mt-4">{{ item.description }}</p>
+                    <h4 class="mt-3 font-bebas text-[2rem] leading-none text-white md:mt-3 md:text-[1.65rem]">{{ item.title }}</h4>
+                    <p class="mt-2.5 text-[13px] leading-relaxed text-white/60 md:mt-3">{{ item.description }}</p>
                     {% if item.link_url %}
-                    <a href="{{ item.link_url }}" class="mt-5 inline-flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-muko-red transition-colors hover:text-white md:mt-6 md:text-xs md:tracking-[0.25em]">
+                    <a href="{{ item.link_url }}" class="mt-5 inline-flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-muko-red transition-colors hover:text-white md:mt-4 md:text-[10px] md:tracking-[0.25em]">
                         Explore
                         <i data-lucide="arrow-right" class="h-4 w-4"></i>
                     </a>
@@ -185,18 +347,18 @@
                 </div>
             </article>
             {% empty %}
-            <div class="rounded-[1.75rem] border border-dashed border-white/10 bg-white/5 p-6 text-center text-white/45 md:col-span-3 md:p-8">
+            <div class="rounded-2xl border border-dashed border-white/10 bg-white/5 p-6 text-center text-white/45 md:col-span-3 md:p-8">
                 Add shop items in the admin to populate this section.
             </div>
             {% endfor %}
         </div>
 
-        <div class="mt-8 flex flex-col gap-3 md:mt-12 md:flex-row md:flex-wrap md:gap-4">
-            <a href="{{ section.primary_cta_url|default:whatsapp_contact_url }}" class="inline-flex items-center justify-center gap-3 rounded-full border border-muko-red bg-muko-red px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-white transition-colors hover:bg-muko-red/80 md:justify-start md:px-6 md:text-xs md:tracking-[0.25em]">
+        <div class="mt-6 flex flex-col gap-3 md:mt-7 md:flex-row md:flex-wrap md:gap-3">
+            <a href="{{ section.primary_cta_url|default:whatsapp_contact_url }}" class="inline-flex items-center justify-center gap-3 rounded-full border border-muko-red bg-muko-red px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-white transition-colors hover:bg-muko-red/80 md:justify-start md:px-5 md:text-[10px] md:tracking-[0.25em]">
                 {{ section.primary_cta_label|default:'Ask About The Shop' }}
                 <i data-lucide="arrow-right" class="h-4 w-4"></i>
             </a>
-            <span class="inline-flex items-center justify-center gap-3 rounded-full border border-white/10 px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/50 md:justify-start md:px-6 md:text-xs md:tracking-[0.25em]">
+            <span class="inline-flex items-center justify-center gap-3 rounded-full border border-white/10 px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/50 md:justify-start md:px-5 md:text-[10px] md:tracking-[0.25em]">
                 {{ section.secondary_badge_label|default:'Launching Soon' }}
                 <i data-lucide="{{ section.secondary_badge_icon|default:'clock-3' }}" class="h-4 w-4"></i>
             </span>
@@ -210,10 +372,10 @@
     <div class="max-w-7xl mx-auto">
         <div class="grid grid-cols-1 items-start gap-8 lg:grid-cols-2 lg:gap-16">
             <div>
-                <h3 class="mb-1.5 font-script text-[1.7rem] text-muko-red md:text-3xl">Get in touch</h3>
-                <h2 class="mb-4 font-bebas text-[2.8rem] leading-[0.9] tracking-tight text-white md:mb-6 md:text-5xl lg:text-7xl">Let's <span class="text-white/35">Collaborate</span></h2>
+                <h3 class="mb-1.5 font-script text-[1.7rem] text-muko-red md:text-3xl">{{ site_content.contact_eyebrow|default:"Get in touch" }}</h3>
+                <h2 class="mb-4 font-bebas text-[2.8rem] leading-[0.9] tracking-tight text-white md:mb-6 md:text-5xl lg:text-7xl">{{ site_content.contact_heading|default:"Let's" }} <span class="text-white/35">{{ site_content.contact_heading_highlight|default:"Collaborate" }}</span></h2>
                 <p class="mb-7 max-w-md text-sm leading-relaxed text-white/60 md:mb-8 md:text-base">
-                    Have a project in mind? Looking for a partner to build something impactful? Message me on WhatsApp and let's start the conversation where it is fastest.
+                    {{ site_content.contact_intro|default:"Have a project in mind? Looking for a partner to build something impactful? Message me on WhatsApp and let's start the conversation where it is fastest." }}
                 </p>
 
                 <div class="space-y-3 md:space-y-4">
@@ -246,7 +408,7 @@
 <!-- Footer -->
 <footer class="py-12 px-6 md:px-20 lg:px-32 bg-muko-black border-t border-white/5 text-center">
     <p class="text-white/50 text-[10px] tracking-widest uppercase">
-        &copy; 2026 MUKO. Built with Passion.
+        &copy; {% now "Y" %} {{ site_content.footer_text|default:"MUKO. Built with Passion." }}
     </p>
 </footer>
 
@@ -353,12 +515,13 @@
 <script>
     gsap.registerPlugin(ScrollTrigger);
 
-    // Hero Parallax
+    // Keep the hero present while gently handing focus to the next scene.
     gsap.to("#hero-bg", {
-        yPercent: 20,
+        yPercent: 6,
+        scale: 1.035,
         ease: "none",
         scrollTrigger: {
-            trigger: "section.relative",
+            trigger: "#home",
             start: "top top",
             end: "bottom top",
             scrub: true
@@ -366,11 +529,11 @@
     });
 
     gsap.to("#hero-title", {
-        yPercent: -50,
+        yPercent: -8,
         ease: "none",
         scrollTrigger: {
-            trigger: "section.relative",
-            start: "top top",
+            trigger: "#home",
+            start: "35% top",
             end: "bottom top",
             scrub: true
         }
@@ -382,13 +545,15 @@
     gsap.set("#hero-sub",    { y: 30 });
     gsap.set("#hero-cta",    { y: 40 });
 
-    const heroTl = gsap.timeline({ delay: 0.2 });
+    const heroTl = gsap.timeline({ paused: true });
     heroTl
         .to("#hero-bg-veil", { opacity: 0,    duration: 1.4, ease: "power2.inOut" }, 0)
         .to("#hero-hello",   { opacity: 1, scale: 1, y: 0, duration: 1.4, ease: "power2.out" }, 0.3)
         .to(".muko-char",    { opacity: 1, scaleY: 1, duration: 1.0, stagger: 0.18, ease: "back.out(2.5)" }, 0.9)
         .to("#hero-sub",     { opacity: 1, y: 0, duration: 1.2, ease: "power3.out" }, 1.6)
         .to("#hero-cta",     { opacity: 1, y: 0, duration: 1.2, ease: "power3.out" }, 1.85);
+
+    (window.mukoPageReady || Promise.resolve()).then(() => heroTl.play());
 
     // ── Portrait mousemove parallax (bg layer only) ───────────────
     const heroSection = document.getElementById('home');
@@ -406,9 +571,41 @@
 
     // ── Hero darkens slightly on scroll ───────────────────────────
     gsap.to("#hero-scroll-darken", {
-        opacity: 0.55,
-        scrollTrigger: { trigger: "#home", start: "top top", end: "bottom top", scrub: true }
+        opacity: 0.18,
+        scrollTrigger: { trigger: "#home", start: "45% top", end: "bottom top", scrub: true }
     });
+
+    const transitionTimeline = gsap.timeline({
+        scrollTrigger: {
+            trigger: "#home",
+            start: "55% top",
+            end: "bottom top",
+            scrub: 0.7
+        }
+    });
+    transitionTimeline
+        .to(".hero-transition-beam", { width: "100%", duration: 0.55, ease: "power3.inOut" }, 0)
+        .to(".hero-transition-flare", { opacity: 1, width: "70vw", duration: 0.5, ease: "power2.out" }, 0.12)
+        .to(".hero-transition-flare", { opacity: 0.2, duration: 0.35 }, 0.62)
+        .to(".hero-transition-spark-one", { opacity: 1, x: "-34vw", y: -52, duration: 0.55, ease: "power2.out" }, 0.18)
+        .to(".hero-transition-spark-two", { opacity: 1, x: "29vw", y: -34, duration: 0.6, ease: "power2.out" }, 0.22)
+        .to(".hero-transition-spark-three", { opacity: 1, x: "8vw", y: -78, duration: 0.5, ease: "power2.out" }, 0.26)
+        .to(".hero-transition-spark", { opacity: 0, duration: 0.25 }, 0.72);
+
+    gsap.fromTo("#skills",
+        { clipPath: "polygon(0 12%, 50% 0, 100% 12%, 100% 100%, 0 100%)", y: 70 },
+        {
+            clipPath: "polygon(0 0, 50% 0, 100% 0, 100% 100%, 0 100%)",
+            y: 0,
+            ease: "none",
+            scrollTrigger: {
+                trigger: "#skills",
+                start: "top 100%",
+                end: "top 72%",
+                scrub: 0.65
+            }
+        }
+    );
 
     // Section Headers Reveal
     gsap.utils.toArray("h2.font-bebas").forEach(header => {
@@ -425,7 +622,7 @@
     });
 
     // Services reveal per card as each card enters the viewport.
-    const serviceCards = gsap.utils.toArray("#services-grid > div");
+    const serviceCards = gsap.utils.toArray("#services-grid > button");
     if (serviceCards.length) {
         serviceCards.forEach((card, index) => {
             let hasAnimated = false;
@@ -494,6 +691,173 @@
                 workBtn.classList.add('glow-near');
             } else {
                 workBtn.classList.remove('glow-near');
+            }
+        });
+    }
+
+
+    // On touch/mobile screens, transfer the hover treatment to the card
+    // closest to the viewport focus line as the visitor scrolls.
+    const mobileServiceCards = Array.from(document.querySelectorAll('.service-card'));
+    const mobileServiceMedia = window.matchMedia('(max-width: 767px)');
+    let serviceScrollFrame = null;
+
+    const syncMobileServiceFocus = () => {
+        serviceScrollFrame = null;
+        if (!mobileServiceMedia.matches || mobileServiceCards.length === 0) {
+            mobileServiceCards.forEach((card) => card.classList.remove('is-scroll-active'));
+            return;
+        }
+
+        if (document.getElementById('service-modal')?.classList.contains('is-open')) {
+            mobileServiceCards.forEach((card) => card.classList.remove('is-scroll-active'));
+            return;
+        }
+
+        const focusLine = window.innerHeight * 0.48;
+        let nearestCard = null;
+        let nearestDistance = Number.POSITIVE_INFINITY;
+
+        mobileServiceCards.forEach((card) => {
+            const rect = card.getBoundingClientRect();
+            const cardCenter = rect.top + rect.height / 2;
+            const distance = Math.abs(cardCenter - focusLine);
+            const isNearViewport = rect.bottom > window.innerHeight * 0.18 && rect.top < window.innerHeight * 0.82;
+
+            if (isNearViewport && distance < nearestDistance) {
+                nearestDistance = distance;
+                nearestCard = card;
+            }
+        });
+
+        mobileServiceCards.forEach((card) => {
+            card.classList.toggle('is-scroll-active', card === nearestCard);
+        });
+    };
+
+    const requestMobileServiceFocus = () => {
+        if (serviceScrollFrame === null) {
+            serviceScrollFrame = window.requestAnimationFrame(syncMobileServiceFocus);
+        }
+    };
+
+    if (mobileServiceCards.length) {
+        syncMobileServiceFocus();
+        window.addEventListener('scroll', requestMobileServiceFocus, { passive: true });
+        window.addEventListener('resize', requestMobileServiceFocus);
+        window.addEventListener('orientationchange', () => window.setTimeout(syncMobileServiceFocus, 180));
+        window.addEventListener('pageshow', syncMobileServiceFocus);
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) syncMobileServiceFocus();
+        });
+        mobileServiceMedia.addEventListener('change', syncMobileServiceFocus);
+    }
+
+    // Interactive service detail dialog.
+    const serviceDetails = {
+        web: {
+            title: 'Web Development', icon: 'code-2',
+            description: 'A complete path from a validated idea to a secure, maintainable web product—not just a collection of pages.',
+            includes: ['Discovery and technical planning', 'Responsive frontend implementation', 'Django, APIs and database architecture', 'Authentication, admin and integrations'],
+            outcomes: ['A production-ready application', 'Clean, maintainable source code', 'Deployment and handover documentation', 'A foundation that can scale']
+        },
+        design: {
+            title: 'UI/UX Design', icon: 'pen-tool',
+            description: 'Interfaces shaped around user needs, business priorities and a visual system that stays coherent as the product grows.',
+            includes: ['User flows and information architecture', 'Wireframes and interactive prototypes', 'High-fidelity responsive UI', 'Reusable design system foundations'],
+            outcomes: ['Clearer customer journeys', 'Faster development decisions', 'Consistent visual language', 'Designs ready for implementation']
+        },
+        platforms: {
+            title: 'Digital Platforms', icon: 'layout-grid',
+            description: 'End-to-end platforms that connect content, operations and customer experiences into one dependable system.',
+            includes: ['Requirements and workflow mapping', 'CMS, portal or marketplace architecture', 'Third-party API integrations', 'Roles, permissions and reporting'],
+            outcomes: ['Less manual operational work', 'One reliable source of truth', 'Better customer self-service', 'A platform built for expansion']
+        },
+        cloud: {
+            title: 'Cloud Infrastructure', icon: 'cloud',
+            description: 'Practical cloud foundations that keep applications deployable, observable and resilient without unnecessary complexity.',
+            includes: ['Environment and deployment architecture', 'CI/CD pipeline configuration', 'Security, backups and access controls', 'Monitoring and performance baselines'],
+            outcomes: ['Repeatable deployments', 'Reduced downtime risk', 'Clear operational visibility', 'Infrastructure ready to scale']
+        },
+        seo: {
+            title: 'Performance & SEO', icon: 'search',
+            description: 'Technical and content-focused improvements that help real people—and search engines—reach and use your site effectively.',
+            includes: ['Core Web Vitals and speed audit', 'Technical SEO and crawl review', 'Metadata and structured content', 'Accessibility and conversion checks'],
+            outcomes: ['Faster page experiences', 'Improved search visibility', 'Lower user drop-off', 'A prioritized optimization roadmap']
+        }
+    };
+    const serviceModal = document.getElementById('service-modal');
+    if (serviceModal) {
+        const panel = serviceModal.querySelector('[data-service-panel]');
+        const backdrop = serviceModal.querySelector('[data-service-backdrop]');
+        const closeButton = serviceModal.querySelector('[data-service-close]');
+        const modalTitle = document.getElementById('service-modal-title');
+        const modalDescription = document.getElementById('service-modal-description');
+        const includesList = serviceModal.querySelector('[data-service-includes]');
+        const outcomesList = serviceModal.querySelector('[data-service-outcomes]');
+        const modalIcon = serviceModal.querySelector('[data-service-icon]');
+        const modalCta = serviceModal.querySelector('[data-service-cta]');
+        let activeTrigger = null;
+
+        const listMarkup = (items) => items.map((item) => '<li class="flex gap-2.5 text-sm leading-relaxed text-white/70"><span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-muko-red"></span><span>' + item + '</span></li>').join('');
+
+        const openServiceModal = (trigger) => {
+            const detail = serviceDetails[trigger.dataset.service];
+            if (!detail) return;
+            activeTrigger = trigger;
+            mobileServiceCards.forEach((card) => card.classList.remove('is-scroll-active'));
+            modalTitle.textContent = detail.title;
+            modalDescription.textContent = detail.description;
+            includesList.innerHTML = listMarkup(detail.includes);
+            outcomesList.innerHTML = listMarkup(detail.outcomes);
+            modalIcon.innerHTML = '<i data-lucide="' + detail.icon + '" class="h-6 w-6"></i>';
+            lucide.createIcons();
+            serviceModal.classList.add('is-open');
+            document.body.style.overflow = 'hidden';
+            gsap.to(backdrop, { opacity: 1, duration: .3, ease: 'power2.out' });
+            gsap.to(panel, { opacity: 1, y: 0, scale: 1, duration: .5, ease: 'back.out(1.5)' });
+            closeButton.focus();
+        };
+
+        const closeServiceModal = () => {
+            gsap.to(panel, { opacity: 0, y: 24, scale: .97, duration: .25, ease: 'power2.in' });
+            gsap.to(backdrop, {
+                opacity: 0, duration: .25, onComplete: () => {
+                    serviceModal.classList.remove('is-open');
+                    document.body.style.overflow = '';
+                    if (activeTrigger) {
+                        activeTrigger.focus({ preventScroll: true });
+                        if (mobileServiceMedia.matches) activeTrigger.blur();
+                    }
+                    window.requestAnimationFrame(() => {
+                        syncMobileServiceFocus();
+                        window.setTimeout(syncMobileServiceFocus, 180);
+                    });
+                }
+            });
+        };
+
+        document.querySelectorAll('[data-service]').forEach((trigger) => trigger.addEventListener('click', () => openServiceModal(trigger)));
+        closeButton.addEventListener('click', closeServiceModal);
+        backdrop.addEventListener('click', closeServiceModal);
+        modalCta.addEventListener('click', closeServiceModal);
+        document.addEventListener('keydown', (event) => {
+            if (!serviceModal.classList.contains('is-open')) return;
+            if (event.key === 'Escape') {
+                closeServiceModal();
+                return;
+            }
+            if (event.key === 'Tab') {
+                const focusable = Array.from(panel.querySelectorAll('button, a[href]'));
+                const first = focusable[0];
+                const last = focusable[focusable.length - 1];
+                if (event.shiftKey && document.activeElement === first) {
+                    event.preventDefault();
+                    last.focus();
+                } else if (!event.shiftKey && document.activeElement === last) {
+                    event.preventDefault();
+                    first.focus();
+                }
             }
         });
     }

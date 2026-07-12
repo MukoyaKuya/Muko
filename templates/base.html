@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>document.documentElement.classList.add('muko-loading');</script>
     <title>Muko | Digital Experience Designer</title>
     
     <!-- Google Fonts -->
@@ -43,6 +44,63 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     
     <style>
+
+        html.muko-loading,
+        html.muko-loading body {
+            overflow: hidden;
+        }
+        #muko-loader {
+            position: fixed;
+            inset: 0;
+            z-index: 10000;
+            display: grid;
+            place-items: center;
+            background: #000;
+            opacity: 1;
+            visibility: visible;
+            transition: opacity .45s ease, visibility .45s ease;
+        }
+        html.muko-ready #muko-loader {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        .muko-loader-mark {
+            position: relative;
+            width: 74px;
+            height: 42px;
+        }
+        .muko-loader-mark span {
+            position: absolute;
+            top: 0;
+            width: 6px;
+            height: 42px;
+            border-radius: 999px;
+            background: #ff3131;
+            box-shadow: 0 0 18px rgba(255,49,49,.45);
+            transform: scaleY(.25);
+            transform-origin: bottom;
+            animation: muko-loader-rise .9s ease-in-out infinite alternate;
+        }
+        .muko-loader-mark span:nth-child(1) { left: 4px; animation-delay: 0s; }
+        .muko-loader-mark span:nth-child(2) { left: 24px; animation-delay: .12s; }
+        .muko-loader-mark span:nth-child(3) { left: 44px; animation-delay: .24s; }
+        .muko-loader-mark span:nth-child(4) { left: 64px; animation-delay: .36s; }
+        .muko-loader-caption {
+            margin-top: 18px;
+            color: rgba(255,255,255,.48);
+            font: 600 9px/1 Arial, sans-serif;
+            letter-spacing: .38em;
+            text-align: center;
+            text-transform: uppercase;
+        }
+        @keyframes muko-loader-rise {
+            to { transform: scaleY(1); opacity: .95; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .muko-loader-mark span { animation: none; transform: scaleY(.7); }
+            #muko-loader { transition-duration: .15s; }
+        }
         body {
             background-color: #000000;
             color: #FFFFFF;
@@ -201,6 +259,15 @@
     {% block extra_css %}{% endblock %}
 </head>
 <body id="top" class="font-sans">
+    <div id="muko-loader" role="status" aria-live="polite" aria-label="Loading portfolio">
+        <div>
+            <div class="muko-loader-mark" aria-hidden="true">
+                <span></span><span></span><span></span><span></span>
+            </div>
+            <p class="muko-loader-caption">Loading</p>
+        </div>
+    </div>
+
 
     <!-- Custom cursor (desktop / fine-pointer only — hidden on touch via CSS) -->
     <div id="cursor-dot" aria-hidden="true"></div>
@@ -241,6 +308,14 @@
                 <svg viewBox="0 0 24 24" aria-hidden="true" class="h-6 w-6 fill-current"><path d="M19.05 4.91A9.82 9.82 0 0 0 12.03 2C6.6 2 2.16 6.42 2.16 11.86c0 1.74.45 3.43 1.3 4.92L2 22l5.39-1.41a9.83 9.83 0 0 0 4.64 1.18h.01c5.43 0 9.86-4.42 9.86-9.86a9.8 9.8 0 0 0-2.85-7Zm-7.02 15.2h-.01a8.15 8.15 0 0 1-4.15-1.13l-.3-.18-3.2.84.85-3.12-.2-.32a8.14 8.14 0 0 1-1.25-4.34c0-4.49 3.66-8.14 8.17-8.14 2.18 0 4.22.85 5.76 2.38a8.08 8.08 0 0 1 2.38 5.76c0 4.49-3.66 8.15-8.15 8.15Zm4.47-6.12c-.24-.12-1.4-.69-1.62-.76-.22-.08-.38-.12-.54.12-.16.24-.62.76-.76.92-.14.16-.28.18-.52.06-.24-.12-1.02-.37-1.94-1.18-.72-.64-1.2-1.42-1.34-1.66-.14-.24-.02-.37.1-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.3-.74-1.78-.2-.48-.4-.41-.54-.42h-.46c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2s.86 2.32.98 2.48c.12.16 1.68 2.56 4.06 3.59.57.24 1.02.38 1.37.48.58.18 1.1.16 1.52.1.46-.07 1.4-.57 1.6-1.12.2-.55.2-1.02.14-1.12-.06-.1-.22-.16-.46-.28Z"/></svg>
                 <span class="sidebar-tooltip">WhatsApp</span>
             </a>
+
+
+            {% if portfolio_cv_url %}
+            <a href="{{ portfolio_cv_url }}" target="_blank" rel="noopener noreferrer" class="sidebar-icon relative group flex items-center justify-center text-muko-red" aria-label="{{ portfolio_cv_label }}">
+                <i data-lucide="file-text" class="h-6 w-6"></i>
+                <span class="sidebar-tooltip">{{ portfolio_cv_label }}</span>
+            </a>
+            {% endif %}
 
             <!-- Social Links Integrated -->
             <div class="pt-8 mt-8 border-t border-white/10 flex flex-col gap-8">
@@ -441,6 +516,37 @@
                 }
             });
         }
+    </script>
+
+    <script>
+        window.mukoPageReady = new Promise((resolve) => {
+            const heroImage = document.getElementById('hero-bg');
+            const timeout = new Promise((done) => window.setTimeout(done, 4000));
+            const fontsReady = document.fonts
+                ? Promise.all([
+                    document.fonts.load('700 1em "Dancing Script"'),
+                    document.fonts.load('400 1em "Bebas Neue"'),
+                    document.fonts.load('400 1em "Inter"'),
+                ]).catch(() => {})
+                : Promise.resolve();
+            const imageReady = heroImage
+                ? (heroImage.complete
+                    ? (heroImage.decode ? heroImage.decode().catch(() => {}) : Promise.resolve())
+                    : new Promise((done) => {
+                        heroImage.addEventListener('load', done, { once: true });
+                        heroImage.addEventListener('error', done, { once: true });
+                    }))
+                : Promise.resolve();
+
+            Promise.race([Promise.all([fontsReady, imageReady]), timeout]).then(() => {
+                window.requestAnimationFrame(() => {
+                    document.documentElement.classList.remove('muko-loading');
+                    document.documentElement.classList.add('muko-ready');
+                    resolve();
+                    window.setTimeout(() => document.getElementById('muko-loader')?.remove(), 500);
+                });
+            });
+        });
     </script>
     {% block extra_js %}{% endblock %}
 

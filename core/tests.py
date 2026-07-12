@@ -190,3 +190,97 @@ class PortfolioPageTests(TestCase):
 
 		self.assertEqual(response.status_code, 422)
 		self.assertEqual(ContactSubmission.objects.count(), 0)
+
+
+class VisitorTrackingTests(TestCase):
+	def test_tracks_unique_ip_without_storing_raw_address(self):
+		response = self.client.get(
+			reverse('home'),
+			REMOTE_ADDR='203.0.113.42',
+			HTTP_USER_AGENT='Portfolio Browser',
+		)
+
+		self.assertEqual(response.status_code, 200)
+		from .models import Visitor
+		visitor = Visitor.objects.get()
+		self.assertEqual(visitor.visit_count, 1)
+		self.assertNotIn('203.0.113.42', visitor.ip_hash)
+		self.assertEqual(visitor.last_path, '/')
+
+	def test_repeat_requests_in_same_session_are_deduplicated(self):
+		from .models import Visitor
+		for _ in range(2):
+			self.client.get(
+				reverse('home'),
+				REMOTE_ADDR='203.0.113.43',
+				HTTP_USER_AGENT='Portfolio Browser',
+			)
+
+		self.assertEqual(Visitor.objects.get().visit_count, 1)
+
+	def test_same_ip_across_sessions_increments_visit_count(self):
+		from django.test import Client
+		from .models import Visitor
+
+		for _ in range(2):
+			Client().get(
+				reverse('home'),
+				REMOTE_ADDR='203.0.113.44',
+				HTTP_USER_AGENT='Portfolio Browser',
+			)
+
+		self.assertEqual(Visitor.objects.get().visit_count, 2)
+
+	def test_admin_requests_are_not_tracked(self):
+		from .models import Visitor
+		self.client.get('/admin/', REMOTE_ADDR='203.0.113.45')
+		self.assertFalse(Visitor.objects.exists())
+
+
+class PortfolioCvTests(TestCase):
+	def test_cv_button_is_hidden_until_pdf_is_configured(self):
+		response = self.client.get(reverse('home'))
+		self.assertNotContains(response, 'aria-label="View CV"')
+
+	def test_cv_button_links_to_admin_managed_pdf(self):
+		from .models import PortfolioSettings
+		PortfolioSettings.objects.create(
+			cv_file='documents/muko-cv.pdf',
+			cv_label='Download CV',
+		)
+
+		response = self.client.get(reverse('home'))
+
+		self.assertContains(response, '/media/documents/muko-cv.pdf')
+		self.assertContains(response, 'aria-label="Download CV"')
+		self.assertContains(response, 'data-lucide="file-text"')
+
+
+class SiteContentSettingsTests(TestCase):
+	def test_admin_managed_copy_renders_on_homepage(self):
+		from .models import SiteContentSettings
+		SiteContentSettings.objects.create(
+			hero_eyebrow='Hello from admin',
+			hero_description='Custom hero description.',
+			hero_cta_label='See Projects',
+			services_eyebrow='Capabilities',
+			services_heading='What I',
+			services_heading_highlight='Deliver',
+			services_intro='Custom services introduction.',
+			work_eyebrow='Recent Work',
+			work_heading='Selected',
+			work_heading_highlight='Projects',
+			contact_eyebrow='Start a conversation',
+			contact_heading='Build',
+			contact_heading_highlight='Together',
+			contact_intro='Custom contact introduction.',
+			footer_text='Custom footer text.',
+		)
+
+		response = self.client.get(reverse('home'))
+
+		self.assertContains(response, 'Hello from admin')
+		self.assertContains(response, 'Custom hero description.')
+		self.assertContains(response, 'Custom services introduction.')
+		self.assertContains(response, 'Custom contact introduction.')
+		self.assertContains(response, 'Custom footer text.')

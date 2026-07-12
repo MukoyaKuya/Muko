@@ -3,11 +3,11 @@ from datetime import timedelta
 
 from django import template
 from django.contrib.admin.models import LogEntry
-from django.db.models import Count
+from django.db.models import Count, Sum
 from django.db.models.functions import TruncDate
 from django.utils import timezone
 
-from core.models import ContactSubmission, FeaturedProject, ShopItem, ShopSectionSettings
+from core.models import ContactSubmission, FeaturedProject, ShopItem, ShopSectionSettings, Visitor
 
 register = template.Library()
 
@@ -32,6 +32,10 @@ def admin_analytics_data():
     labels = [d.strftime('%b %d') for d in days]
     activity = [activity_map.get(d, 0) for d in days]
 
+    # Privacy-preserving visitor analytics
+    unique_visitors = Visitor.objects.count()
+    total_visits = Visitor.objects.aggregate(total=Sum('visit_count'))['total'] or 0
+    visitors_today = Visitor.objects.filter(last_seen__date=today).count()
     # Content counts
     pub_projects = FeaturedProject.objects.filter(is_published=True).count()
     draft_projects = FeaturedProject.objects.filter(is_published=False).count()
@@ -47,6 +51,9 @@ def admin_analytics_data():
         'total_shop': pub_shop + draft_shop,
         'shop_sections': ShopSectionSettings.objects.count(),
         'submissions': ContactSubmission.objects.count(),
+        'unique_visitors': unique_visitors,
+        'total_visits': total_visits,
+        'visitors_today': visitors_today,
         # Chart data (JSON strings for safe template output)
         'chart_labels': json.dumps(labels),
         'chart_activity': json.dumps(activity),

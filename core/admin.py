@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.templatetags.static import static
 from django.utils.html import format_html
 
-from .models import ContactSubmission, FeaturedProject, ProjectImage, ShopItem, ShopSectionSettings
+from .models import ContactSubmission, FeaturedProject, ProjectImage, ShopItem, ShopSectionSettings, Visitor, PortfolioSettings, SiteContentSettings
 
 
 admin.site.site_header = 'Muko Admin'
@@ -81,7 +81,7 @@ class ShopItemAdminForm(forms.ModelForm):
 
 class ProjectImageInline(admin.TabularInline):
 	model = ProjectImage
-	extra = 3
+	extra = 1
 	fields = ('image', 'caption', 'display_order')
 	ordering = ('display_order',)
 
@@ -94,17 +94,19 @@ class FeaturedProjectAdmin(admin.ModelAdmin):
 	prepopulated_fields = {'slug': ('title',)}
 	search_fields = ('title', 'category', 'headline', 'summary')
 	list_filter = ('is_published', 'filter_group')
+	list_per_page = 25
+	save_on_top = True
 	readonly_fields = ('image_preview',)
 	inlines = [ProjectImageInline]
 	fieldsets = (
-		('Card Content', {
+		('Portfolio Card', {
 			'fields': ('title', 'slug', 'category', 'filter_group', 'card_summary', 'live_url'),
 		}),
 		('Hero Image', {
 			'fields': ('hero_image_upload', 'remove_uploaded_hero_image', 'image_preview', 'hero_image'),
 			'description': 'Upload a screenshot or hero image. The uploaded file takes priority; the legacy path is a fallback for existing projects.',
 		}),
-		('Detail Page Content', {
+		('Case Study Story', {
 			'fields': ('headline', 'summary', 'challenge', 'approach', 'outcome', 'services', 'stack'),
 		}),
 		('Publishing', {
@@ -177,3 +179,58 @@ class ShopSectionSettingsAdmin(admin.ModelAdmin):
 
 	def has_add_permission(self, request):
 		return not ShopSectionSettings.objects.exists()
+
+
+@admin.register(Visitor)
+class VisitorAdmin(admin.ModelAdmin):
+	list_display = ('visitor_fingerprint', 'visit_count', 'first_seen', 'last_seen', 'last_path')
+	search_fields = ('ip_hash', 'last_path', 'user_agent')
+	list_filter = ('first_seen', 'last_seen')
+	readonly_fields = ('ip_hash', 'visit_count', 'first_seen', 'last_seen', 'last_path', 'user_agent')
+	ordering = ('-last_seen',)
+	list_per_page = 50
+
+	@admin.display(description='Anonymized IP')
+	def visitor_fingerprint(self, obj):
+		return obj.fingerprint
+
+	def has_add_permission(self, request):
+		return False
+
+
+@admin.register(PortfolioSettings)
+class PortfolioSettingsAdmin(admin.ModelAdmin):
+	fieldsets = (
+		('Curriculum Vitae', {
+			'fields': ('cv_file', 'cv_label'),
+			'description': 'Upload the PDF shown by the CV button in the public desktop sidebar.',
+		}),
+	)
+	readonly_fields = ('updated_at',)
+
+	def has_add_permission(self, request):
+		return not PortfolioSettings.objects.exists()
+
+
+@admin.register(SiteContentSettings)
+class SiteContentSettingsAdmin(admin.ModelAdmin):
+	fieldsets = (
+		('Hero Section', {
+			'fields': ('hero_eyebrow', 'hero_description', 'hero_cta_label'),
+		}),
+		('Services Section', {
+			'fields': ('services_eyebrow', 'services_heading', 'services_heading_highlight', 'services_intro'),
+		}),
+		('Featured Work Section', {
+			'fields': ('work_eyebrow', 'work_heading', 'work_heading_highlight'),
+		}),
+		('Contact Section', {
+			'fields': ('contact_eyebrow', 'contact_heading', 'contact_heading_highlight', 'contact_intro'),
+		}),
+		('Footer', {
+			'fields': ('footer_text',),
+		}),
+	)
+
+	def has_add_permission(self, request):
+		return not SiteContentSettings.objects.exists()

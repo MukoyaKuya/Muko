@@ -4,17 +4,25 @@
 {% block content %}
 <div class="muko-admin-toolbar">
     <div class="muko-admin-toolbar-copy">
-        <span class="muko-admin-kicker">Collection</span>
+        <span class="muko-admin-kicker">{% if opts.model_name == 'featuredproject' %}Portfolio CMS{% else %}Collection{% endif %}</span>
         <h1>{{ cl.opts.verbose_name_plural|capfirst }}</h1>
-        <p>Review, filter, and update {{ cl.opts.verbose_name_plural }} in a cleaner CMS-style workspace.</p>
+        <p>{% if opts.model_name == 'featuredproject' %}Create, arrange, preview, and publish the projects shown in your public portfolio.{% else %}Review, filter, and update {{ cl.opts.verbose_name_plural }} in a cleaner CMS-style workspace.{% endif %}</p>
     </div>
     <div class="muko-admin-toolbar-actions">
         {% if has_add_permission %}
-        <a class="muko-admin-link is-primary" href="{% url cl.opts|admin_urlname:'add' %}">{% blocktranslate with name=cl.opts.verbose_name %}Add {{ name }}{% endblocktranslate %}</a>
+        <a class="muko-admin-link is-primary" href="{% url cl.opts|admin_urlname:'add' %}">+ {% blocktranslate with name=cl.opts.verbose_name %}Add {{ name }}{% endblocktranslate %}</a>
         {% endif %}
         <a class="muko-admin-link" href="{% url 'admin:index' %}">{% translate 'Dashboard' %}</a>
     </div>
 </div>
+{% if opts.model_name == 'featuredproject' %}
+<div class="muko-project-workflow" aria-label="Project publishing workflow">
+    <div><span>01</span><strong>Add the essentials</strong><small>Title, category and card summary</small></div>
+    <div><span>02</span><strong>Upload visuals</strong><small>Cover image and optional gallery</small></div>
+    <div><span>03</span><strong>Tell the story</strong><small>Challenge, approach and outcome</small></div>
+    <div><span>04</span><strong>Publish</strong><small>Set order and make it visible</small></div>
+</div>
+{% endif %}
 <div class="muko-admin-surface">
     {{ block.super }}
 </div>

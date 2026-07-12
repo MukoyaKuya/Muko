@@ -4,7 +4,7 @@
 {% block content %}
 <div class="muko-admin-toolbar">
     <div class="muko-admin-toolbar-copy">
-        <span class="muko-admin-kicker">Editor</span>
+        <span class="muko-admin-kicker">{% if opts.model_name == 'featuredproject' %}Project editor{% else %}Editor{% endif %}</span>
         <h1>
             {% if add %}
                 {% blocktranslate with name=opts.verbose_name %}Add {{ name }}{% endblocktranslate %}
@@ -12,15 +12,19 @@
                 {{ original|truncatewords:"12" }}
             {% endif %}
         </h1>
-        <p>Use this editor to update public-facing content while keeping structure, order, and publishing controls aligned.</p>
+        <p>{% if opts.model_name == 'featuredproject' %}Build the portfolio card and its full case study. Required fields are marked; you can save and continue at any point.{% else %}Update public-facing content while keeping structure, order, and publishing controls aligned.{% endif %}</p>
     </div>
     <div class="muko-admin-toolbar-actions">
-        {% if not add and has_view_permission %}
-        <a class="muko-admin-link" href="{% url opts|admin_urlname:'changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a>
-        {% endif %}
+        <a class="muko-admin-link" href="{% url opts|admin_urlname:'changelist' %}">← {{ opts.verbose_name_plural|capfirst }}</a>
         <a class="muko-admin-link" href="{% url 'admin:index' %}">{% translate 'Dashboard' %}</a>
     </div>
 </div>
+{% if opts.model_name == 'featuredproject' %}
+<div class="muko-editor-note">
+    <strong>Recommended:</strong>
+    Upload a landscape cover image, keep the card summary concise, and write the challenge, approach, and outcome as clear client-facing paragraphs.
+</div>
+{% endif %}
 <div class="muko-admin-surface">
     {{ block.super }}
 </div>

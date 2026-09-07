@@ -105,6 +105,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'core.middleware.SecurityHeadersMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'core.middleware.VisitorTrackingMiddleware',
@@ -197,7 +198,9 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+# Store datetimes in UTC (USE_TZ=True) while displaying them in the site's
+# local time in Django admin and templates. This can be overridden per host.
+TIME_ZONE = os.getenv('TIME_ZONE', 'Africa/Nairobi')
 
 USE_I18N = True
 
@@ -210,6 +213,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+WHITENOISE_MAX_AGE = get_int_env('WHITENOISE_MAX_AGE', 31536000 if IS_PRODUCTION else 0)
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
@@ -218,7 +222,11 @@ STORAGES = {
         'BACKEND': 'django.core.files.storage.FileSystemStorage',
     },
     'staticfiles': {
-        'BACKEND': 'whitenoise.storage.CompressedStaticFilesStorage',
+        'BACKEND': (
+            'whitenoise.storage.CompressedManifestStaticFilesStorage'
+            if IS_PRODUCTION
+            else 'whitenoise.storage.CompressedStaticFilesStorage'
+        ),
     },
 }
 
@@ -232,7 +240,7 @@ SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_REFERRER_POLICY = os.getenv('SECURE_REFERRER_POLICY', 'same-origin')
 SECURE_SSL_REDIRECT = get_bool_env('SECURE_SSL_REDIRECT', IS_PRODUCTION)
-SECURE_HSTS_SECONDS = get_int_env('SECURE_HSTS_SECONDS', 3600 if IS_PRODUCTION else 0)
+SECURE_HSTS_SECONDS = get_int_env('SECURE_HSTS_SECONDS', 63072000 if IS_PRODUCTION else 0)
 SECURE_HSTS_INCLUDE_SUBDOMAINS = get_bool_env(
     'SECURE_HSTS_INCLUDE_SUBDOMAINS',
     IS_PRODUCTION and SECURE_HSTS_SECONDS > 0,
@@ -260,5 +268,38 @@ CONTACT_NOTIFICATION_EMAIL = os.getenv('CONTACT_NOTIFICATION_EMAIL', 'deltonmuko
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+SITE_URL = os.getenv(
+    'SITE_URL',
+    'https://mukoyakuya.online' if IS_PRODUCTION else 'http://127.0.0.1:8000',
+).rstrip('/')
+DEFAULT_META_DESCRIPTION = os.getenv(
+    'DEFAULT_META_DESCRIPTION',
+    'Muko designs and builds fast, thoughtful digital experiences, from websites to scalable platforms.',
+)
+
+# A per-process cache is sufficient for the small HostPinnacle deployment. Replace this
+# with Redis or Memcached through Django settings if the application is scaled to multiple
+# processes or hosts.
+CACHES = {
+    'default': {
+        'BACKEND': os.getenv('CACHE_BACKEND', 'django.core.cache.backends.locmem.LocMemCache'),
+        'LOCATION': os.getenv('CACHE_LOCATION', 'muko-default'),
+    }
+}
+
+# Contact submissions are persisted, but the sender IP is used only transiently for the
+# rate-limit key and is never stored with the message.
+CONTACT_RATE_LIMIT = get_int_env('CONTACT_RATE_LIMIT', 5)
+CONTACT_RATE_LIMIT_WINDOW_SECONDS = get_int_env('CONTACT_RATE_LIMIT_WINDOW_SECONDS', 3600)
+
+# Visitor analytics deliberately avoids outbound IP geolocation. When the application is
+# behind a trusted CDN that supplies a country header, opt in explicitly.
+ANALYTICS_ENABLED = get_bool_env('ANALYTICS_ENABLED', True)
+TRACK_BOT_VISITS = get_bool_env('TRACK_BOT_VISITS', False)
+TRUST_GEO_HEADERS = get_bool_env('TRUST_GEO_HEADERS', False)
+# Absolute path to a local MaxMind GeoLite2-Country .mmdb file. Leave empty to
+# disable offline country lookup; the application never sends visitor IPs away.
+GEOIP_DATABASE_PATH = os.getenv('GEOIP_DATABASE_PATH', '').strip()
 VISITOR_TRACKING_COOLDOWN_SECONDS = get_int_env('VISITOR_TRACKING_COOLDOWN_SECONDS', 1800)
+VISITOR_LOG_RETENTION_DAYS = get_int_env('VISITOR_LOG_RETENTION_DAYS', 90)
 TRUST_X_FORWARDED_FOR = get_bool_env('TRUST_X_FORWARDED_FOR', False)

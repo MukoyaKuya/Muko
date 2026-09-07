@@ -14,12 +14,30 @@
         <div class="muko-kpi">
             <span class="muko-kpi-label">Unique Visitors</span>
             <strong class="muko-kpi-value">{{ d.unique_visitors }}</strong>
-            <span class="muko-kpi-sub">{{ d.visitors_today }} seen today</span>
+            <span class="muko-kpi-sub">{{ d.visitors_today }} seen today (real)</span>
         </div>
         <div class="muko-kpi">
             <span class="muko-kpi-label">Total Visits</span>
             <strong class="muko-kpi-value">{{ d.total_visits }}</strong>
-            <span class="muko-kpi-sub">30-minute repeat-visit window</span>
+            <span class="muko-kpi-sub">{{ d.bot_hits_total }} crawler hits</span>
+        </div>
+        <div class="muko-kpi">
+            <span class="muko-kpi-label">Published Projects</span>
+            <strong class="muko-kpi-value">{{ d.published_projects }}</strong>
+            <span class="muko-kpi-sub">of {{ d.total_projects }} total</span>
+        </div>
+        <div class="muko-kpi">
+            <span class="muko-kpi-label">Live Shop Items</span>
+            <strong class="muko-kpi-value">{{ d.published_shop }}</strong>
+            <span class="muko-kpi-sub">of {{ d.total_shop }} total</span>
+        </div>
+        <div class="muko-kpi">
+            <span class="muko-kpi-label">Drafts</span>
+            <strong class="muko-kpi-value">{{ d.draft_projects|add:d.draft_shop }}</strong>
+            <span class="muko-kpi-sub">projects + shop items</span>
+        </div>
+        <div class="muko-kpi">
+            <span class="muko-kpi-label">Submissions</span>
         </div>
         <div class="muko-kpi">
             <span class="muko-kpi-label">Published Projects</span>
@@ -68,6 +86,48 @@
             </div>
         </div>
     </div>
+
+    {# ── Visitor Charts Row ───────────────────────────────── #}
+    <div class="muko-chart-row" style="margin-top: 20px;">
+        <div class="muko-panel muko-chart-panel">
+            <div class="muko-panel-head">
+                <div>
+                    <h2 class="muko-panel-h2">Visitor Traffic</h2>
+                    <p class="muko-panel-sub">Real visits vs Bot/Crawler hits (last 30 days)</p>
+                </div>
+            </div>
+            <div class="muko-chart-wrap">
+                <canvas id="mukoVisitorChart"></canvas>
+            </div>
+        </div>
+        <div class="muko-panel muko-chart-panel">
+            <div class="muko-panel-head">
+                <div>
+                    <h2 class="muko-panel-h2">Device & Region Breakdown</h2>
+                    <p class="muko-panel-sub">Demographics and devices</p>
+                </div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 15px; height: 220px; justify-content: space-between;">
+                <div style="position: relative; height: 110px;">
+                    <canvas id="mukoDeviceChart"></canvas>
+                </div>
+                <div style="flex-grow: 1; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 8px; overflow-y: auto;">
+                    <span style="font-size: 0.72rem; color: rgba(255,255,255,0.38); text-transform: uppercase; letter-spacing: 0.1em; display: block; margin-bottom: 5px;">Top Regions</span>
+                    <div style="display: flex; flex-direction: column; gap: 4px;">
+                        {% for region in d.top_regions %}
+                        <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: rgba(255,255,255,0.85);">
+                            <span>{{ region.name }}</span>
+                            <strong style="color: #ff3131;">{{ region.count }}</strong>
+                        </div>
+                        {% empty %}
+                        <div style="font-size: 0.8rem; color: rgba(255,255,255,0.4);">No region data available</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     {# ── Quick Actions + Activity log ─────────────────────── #}
     <div class="muko-lower-row">
@@ -178,9 +238,7 @@
                 </a>
             </div>
         </div>
-</div>
-</div>
-
+{{ d.charts_json|json_script:"admin-charts-data" }}
 <script>
 (function () {
     'use strict';
@@ -189,10 +247,16 @@
     const GRID      = 'rgba(255,255,255,0.05)';
     const TICK      = 'rgba(255,255,255,0.38)';
 
-    const labels   = {{ d.chart_labels|safe }};
-    const activity = {{ d.chart_activity|safe }};
-    const dLabels  = {{ d.donut_labels|safe }};
-    const dData    = {{ d.donut_data|safe }};
+    const chartData = JSON.parse(document.getElementById('admin-charts-data').textContent);
+    const labels   = chartData.labels;
+    const activity = chartData.activity;
+    const dLabels  = chartData.donut_labels;
+    const dData    = chartData.donut_data;
+
+    const vVisits  = chartData.visits;
+    const vBotHits = chartData.bot_hits;
+    const devLabels = chartData.device_labels;
+    const devData   = chartData.device_data;
 
     /* ── Activity line chart ─────────────────────────────── */
     const actEl = document.getElementById('mukoActivityChart');
@@ -265,6 +329,103 @@
                             padding: 16,
                             font: { size: 12 },
                             boxWidth: 12,
+                        },
+                    },
+                },
+            },
+        });
+    }
+
+    /* ── Visitor Traffic line chart ──────────────────────── */
+    const visEl = document.getElementById('mukoVisitorChart');
+    if (visEl) {
+        new Chart(visEl, {
+            type: 'line',
+            data: {
+                labels,
+                datasets: [
+                    {
+                        label: 'Real Visits',
+                        data: vVisits,
+                        fill: true,
+                        borderColor: RED,
+                        backgroundColor: RED_ALPHA,
+                        borderWidth: 2,
+                        pointRadius: 2,
+                        pointBackgroundColor: RED,
+                        tension: 0.4,
+                    },
+                    {
+                        label: 'Crawler Hits',
+                        data: vBotHits,
+                        fill: false,
+                        borderColor: 'rgba(255,255,255,0.4)',
+                        borderWidth: 1.5,
+                        borderDash: [4, 4],
+                        pointRadius: 1,
+                        tension: 0.4,
+                    }
+                ],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            color: 'rgba(255,255,255,0.65)',
+                            font: { size: 11 }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: { color: TICK, maxTicksLimit: 8, font: { size: 11 } },
+                        grid:  { color: GRID },
+                        border: { color: GRID },
+                    },
+                    y: {
+                        beginAtZero: true,
+                        ticks: { color: TICK, font: { size: 11 } },
+                        grid:  { color: GRID },
+                        border: { color: GRID },
+                    },
+                },
+            },
+        });
+    }
+
+    /* ── Device doughnut chart ───────────────────────────── */
+    const devEl = document.getElementById('mukoDeviceChart');
+    if (devEl) {
+        new Chart(devEl, {
+            type: 'doughnut',
+            data: {
+                labels: devLabels,
+                datasets: [{
+                    data: devData,
+                    backgroundColor: [
+                        RED,
+                        'rgba(255,49,49,0.55)',
+                        'rgba(255,255,255,0.55)',
+                        'rgba(255,255,255,0.15)',
+                    ],
+                    borderWidth: 0,
+                }],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '60%',
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            color: 'rgba(255,255,255,0.65)',
+                            font: { size: 11 },
+                            boxWidth: 10,
                         },
                     },
                 },

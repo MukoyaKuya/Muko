@@ -8,6 +8,7 @@ __pycache__/
 venv/
 env/
 .venv/
+node_modules/
 
 # Django
 db.sqlite3
@@ -35,3 +36,12 @@ Thumbs.db
 # Coverage
 .coverage
 htmlcov/
+
+# Archives & installers
+*.zip
+*.tar.gz
+*.exe
+*.msi
+
+# Deployment staging directories
+deployment/*/

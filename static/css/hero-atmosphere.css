@@ -1,0 +1,36 @@
+/* Decorative layer: never intercepts navigation, scrolling, or the portrait. */
+#hero-atmosphere {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    mask-image: linear-gradient(to right, transparent 5%, #0008 40%, #000 70%);
+}
+#hero-atmosphere::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse var(--portrait-rx, 22vw) var(--portrait-ry, 38vh) at var(--portrait-x, 68%) var(--portrait-y, 47%), rgba(255, 65, 45, .12), transparent 85%);
+    opacity: var(--portrait-glow, 0);
+    transition: opacity .65s ease-out;
+}
+#hero-atmosphere canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 1.2s ease;
+}
+#hero-atmosphere[data-interaction="follow"],
+#hero-atmosphere[data-interaction="scatter"],
+#hero-atmosphere[data-interaction="gather"] { mask-image: none; }
+#hero-atmosphere[data-state="running"] canvas,
+#hero-atmosphere[data-state="paused"] canvas { opacity: .8; }
+@media (max-width: 767px) {
+    #hero-atmosphere { mask-image: linear-gradient(to bottom, #000 0%, #0008 42%, transparent 75%); }
+    #hero-atmosphere canvas { max-width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+    #hero-atmosphere::before { display: none; }
+    #hero-atmosphere canvas { display: none; transition: none; }
+}

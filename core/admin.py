@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.templatetags.static import static
 from django.utils.html import format_html
 
-from .models import ContactSubmission, FeaturedProject, ProjectImage, ShopItem, ShopSectionSettings, Visitor, PortfolioSettings, SiteContentSettings
+from .models import ContactSubmission, FeaturedProject, ProjectImage, ShopCategory, ShopItem, ShopSectionSettings, Visitor, PortfolioSettings, SiteContentSettings, Service, VisitLog
 
 
 admin.site.site_header = 'Muko Admin'
@@ -132,14 +132,15 @@ class ContactSubmissionAdmin(admin.ModelAdmin):
 @admin.register(ShopItem)
 class ShopItemAdmin(admin.ModelAdmin):
 	form = ShopItemAdminForm
-	list_display = ('title', 'category', 'icon', 'display_order', 'is_published', 'image_preview')
+	list_display = ('title', 'catalog_category', 'category', 'icon', 'display_order', 'is_published', 'image_preview')
 	list_editable = ('display_order', 'is_published')
-	search_fields = ('title', 'category', 'description', 'icon')
-	list_filter = ('is_published', 'category')
+	search_fields = ('title', 'catalog_category__name', 'category', 'description', 'icon')
+	list_filter = ('is_published', 'catalog_category', 'category')
 	readonly_fields = ('image_preview',)
 	fieldsets = (
 		('Content', {
 			'fields': (
+				'catalog_category',
 				'title',
 				'category',
 				'icon',
@@ -148,6 +149,8 @@ class ShopItemAdmin(admin.ModelAdmin):
 				'image_preview',
 				'image_path',
 				'link_url',
+				'price_label',
+				'cta_label',
 				'description',
 			),
 			'description': 'Upload a shop image in admin. The legacy static path is optional fallback only.',
@@ -163,6 +166,35 @@ class ShopItemAdmin(admin.ModelAdmin):
 			return format_html('<img src="{}" style="max-height:120px;border-radius:6px;">', obj.image_upload.url)
 		if obj.image_path:
 			return format_html('<img src="{}" style="max-height:120px;border-radius:6px;opacity:0.8;">', static(obj.image_path))
+		return '—'
+
+
+@admin.register(ShopCategory)
+class ShopCategoryAdmin(admin.ModelAdmin):
+	list_display = ('name', 'slug', 'display_order', 'is_published', 'item_total')
+	list_editable = ('display_order', 'is_published')
+	prepopulated_fields = {'slug': ('name',)}
+	search_fields = ('name', 'description')
+	list_filter = ('is_published',)
+	readonly_fields = ('image_preview',)
+	fieldsets = (
+		('Category details', {
+			'fields': ('name', 'slug', 'description', 'icon', 'image_upload', 'image_preview'),
+			'description': 'This controls a public catalogue category. Add its items separately under Shop items.',
+		}),
+		('Publishing', {
+			'fields': ('display_order', 'is_published'),
+		}),
+	)
+
+	@admin.display(description='Items')
+	def item_total(self, obj):
+		return obj.items.count()
+
+	@admin.display(description='Preview')
+	def image_preview(self, obj):
+		if obj.image_upload:
+			return format_html('<img src="{}" style="max-height:120px;border-radius:6px;">', obj.image_upload.url)
 		return '—'
 
 
@@ -183,10 +215,10 @@ class ShopSectionSettingsAdmin(admin.ModelAdmin):
 
 @admin.register(Visitor)
 class VisitorAdmin(admin.ModelAdmin):
-	list_display = ('visitor_fingerprint', 'visit_count', 'first_seen', 'last_seen', 'last_path')
-	search_fields = ('ip_hash', 'last_path', 'user_agent')
-	list_filter = ('first_seen', 'last_seen')
-	readonly_fields = ('ip_hash', 'visit_count', 'first_seen', 'last_seen', 'last_path', 'user_agent')
+	list_display = ('visitor_fingerprint', 'visit_count', 'device_type', 'region', 'is_bot', 'first_seen', 'last_seen', 'last_path')
+	search_fields = ('ip_hash', 'last_path', 'user_agent', 'region')
+	list_filter = ('is_bot', 'device_type', 'first_seen', 'last_seen')
+	readonly_fields = ('ip_hash', 'visit_count', 'device_type', 'region', 'is_bot', 'first_seen', 'last_seen', 'last_path', 'user_agent')
 	ordering = ('-last_seen',)
 	list_per_page = 50
 
@@ -196,6 +228,24 @@ class VisitorAdmin(admin.ModelAdmin):
 
 	def has_add_permission(self, request):
 		return False
+
+
+@admin.register(VisitLog)
+class VisitLogAdmin(admin.ModelAdmin):
+	list_display = ('visitor_fingerprint', 'timestamp', 'path', 'is_bot')
+	list_filter = ('is_bot', 'timestamp')
+	search_fields = ('path', 'visitor__ip_hash')
+	readonly_fields = ('visitor', 'timestamp', 'path', 'is_bot')
+	ordering = ('-timestamp',)
+	list_per_page = 50
+
+	@admin.display(description='Visitor')
+	def visitor_fingerprint(self, obj):
+		return obj.visitor.fingerprint
+
+	def has_add_permission(self, request):
+		return False
+
 
 
 @admin.register(PortfolioSettings)
@@ -212,8 +262,22 @@ class PortfolioSettingsAdmin(admin.ModelAdmin):
 		return not PortfolioSettings.objects.exists()
 
 
+class ServiceInline(admin.StackedInline):
+	model = Service
+	extra = 0
+	fieldsets = (
+		(None, {
+			'fields': (
+				'title', 'slug', 'icon', 'short_description', 'description',
+				'includes', 'outcomes', 'tags', 'column_span', 'show_bg_icon', 'display_order'
+			),
+		}),
+	)
+
+
 @admin.register(SiteContentSettings)
 class SiteContentSettingsAdmin(admin.ModelAdmin):
+	inlines = [ServiceInline]
 	fieldsets = (
 		('Hero Section', {
 			'fields': ('hero_eyebrow', 'hero_description', 'hero_cta_label'),

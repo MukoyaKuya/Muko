@@ -1,15 +1,47 @@
-from django.test import TestCase
+from datetime import timedelta
+from django.core.cache import cache
+from django.core.exceptions import ValidationError
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.test import TestCase, override_settings
 from django.urls import reverse
+from django.utils import timezone
+from unittest.mock import Mock, patch
 
-from .models import ContactSubmission, FeaturedProject, ShopItem, ShopSectionSettings
+from .models import ContactSubmission, FeaturedProject, ShopCategory, ShopItem, ShopSectionSettings
+
+
+class ImageUploadValidationTests(TestCase):
+	def test_featured_project_accepts_avif_and_jfif_uploads(self):
+		field = FeaturedProject._meta.get_field('hero_image_upload')
+
+		for filename in ('project.avif', 'camera-export.jfif'):
+			with self.subTest(filename=filename):
+				field.run_validators(SimpleUploadedFile(filename, b'image-content'))
+
+	def test_featured_project_rejects_non_image_extensions(self):
+		field = FeaturedProject._meta.get_field('hero_image_upload')
+
+		with self.assertRaises(ValidationError):
+			field.run_validators(SimpleUploadedFile('malware.exe', b'not an image'))
 
 
 class PortfolioPageTests(TestCase):
+	def setUp(self):
+		cache.clear()
+
 	@classmethod
 	def setUpTestData(cls):
 		FeaturedProject.objects.all().delete()
 		ShopItem.objects.all().delete()
+		ShopCategory.objects.all().delete()
 		ShopSectionSettings.objects.all().delete()
+		cls.shop_category = ShopCategory.objects.create(
+			name='Software Development',
+			slug='software-development',
+			description='Web development, desktop apps, and platforms.',
+			icon='code-2',
+			display_order=10,
+		)
 		FeaturedProject.objects.create(
 			title='Nexus Fintech',
 			slug='nexus-fintech',
@@ -43,6 +75,7 @@ class PortfolioPageTests(TestCase):
 			display_order=2,
 		)
 		ShopItem.objects.create(
+			catalog_category=cls.shop_category,
 			title='Website Templates',
 			category='Templates',
 			icon='layout-template',
@@ -72,9 +105,9 @@ class PortfolioPageTests(TestCase):
 		self.assertContains(response, 'A calmer fintech operations dashboard concept with clearer hierarchy.')
 		self.assertContains(response, '?category=web')
 		self.assertContains(response, '?category=design')
-		self.assertContains(response, 'Website Templates')
-		self.assertContains(response, 'layout-template')
-		self.assertContains(response, 'img/work3.png')
+		self.assertContains(response, 'Software Development')
+		self.assertContains(response, reverse('shop_category', kwargs={'slug': 'software-development'}))
+		self.assertContains(response, 'Browse all categories')
 		self.assertContains(response, 'Shop intro copy')
 		self.assertContains(response, 'Ask About The Shop')
 		self.assertContains(response, 'https://wa.me/254717157165?text=Hi%20Muko%2C%20I%27d%20like%20to%20talk%20about%20a%20project.')
@@ -142,7 +175,7 @@ class PortfolioPageTests(TestCase):
 		self.assertEqual(submission.name, 'Test User')
 		self.assertEqual(submission.email, 'test@example.com')
 
-	def test_contact_form_submission_records_ip_and_user_agent(self):
+	def test_contact_form_does_not_store_ip_and_keeps_user_agent(self):
 		response = self.client.post(
 			reverse('contact'),
 			{
@@ -156,8 +189,21 @@ class PortfolioPageTests(TestCase):
 
 		self.assertEqual(response.status_code, 200)
 		submission = ContactSubmission.objects.first()
-		self.assertEqual(submission.ip_address, '127.0.0.1')
+		self.assertIsNone(submission.ip_address)
 		self.assertEqual(submission.user_agent, 'TestAgent/1.0')
+
+	@override_settings(CONTACT_RATE_LIMIT=1, CONTACT_RATE_LIMIT_WINDOW_SECONDS=3600)
+	def test_contact_form_rate_limits_repeated_requests(self):
+		payload = {
+			'name': 'Test User',
+			'email': 'test@example.com',
+			'message': 'This is a test inquiry about a project.',
+		}
+		self.assertEqual(self.client.post(reverse('contact'), payload, REMOTE_ADDR='203.0.113.90').status_code, 200)
+		response = self.client.post(reverse('contact'), payload, REMOTE_ADDR='203.0.113.90')
+
+		self.assertEqual(response.status_code, 429)
+		self.assertContains(response, 'Too many messages', status_code=429)
 
 	def test_contact_form_empty_fields_return_errors(self):
 		response = self.client.post(reverse('contact'), {
@@ -236,6 +282,102 @@ class VisitorTrackingTests(TestCase):
 		self.client.get('/admin/', REMOTE_ADDR='203.0.113.45')
 		self.assertFalse(Visitor.objects.exists())
 
+	def test_bots_are_not_tracked_by_default(self):
+		from .models import Visitor
+		self.client.get(
+			reverse('home'),
+			REMOTE_ADDR='203.0.113.50',
+			HTTP_USER_AGENT='Googlebot/2.1 (+http://www.google.com/bot.html)',
+		)
+		self.assertFalse(Visitor.objects.exists())
+
+	@override_settings(TRACK_BOT_VISITS=True)
+	def test_visitor_device_region_and_bot_classification(self):
+		from .models import Visitor, VisitLog
+
+		# Test bot visitor
+		self.client.get(
+			reverse('home'),
+			REMOTE_ADDR='203.0.113.50',
+			HTTP_USER_AGENT='Googlebot/2.1 (+http://www.google.com/bot.html)',
+		)
+		bot_visitor = Visitor.objects.get(device_type='Bot/Crawler')
+		self.assertTrue(bot_visitor.is_bot)
+		self.assertEqual(VisitLog.objects.filter(is_bot=True).count(), 1)
+
+		# Test mobile visitor
+		self.client.get(
+			reverse('home'),
+			REMOTE_ADDR='203.0.113.51',
+			HTTP_USER_AGENT='Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15',
+		)
+		mobile_visitor = Visitor.objects.exclude(device_type='Bot/Crawler').get()
+		self.assertEqual(mobile_visitor.device_type, 'Mobile')
+		self.assertFalse(mobile_visitor.is_bot)
+		self.assertEqual(VisitLog.objects.filter(is_bot=False).count(), 1)
+
+	@override_settings(GEOIP_DATABASE_PATH='/tmp/GeoLite2-Country.mmdb')
+	@patch('core.geoip._get_reader')
+	def test_records_country_from_local_geoip_database(self, reader_factory):
+		from .models import Visitor
+
+		reader = Mock()
+		reader.country.return_value.country.name = 'Kenya'
+		reader_factory.return_value = reader
+
+		self.client.get(
+			reverse('home'),
+			REMOTE_ADDR='8.8.8.8',
+			HTTP_USER_AGENT='Portfolio Browser',
+		)
+
+		self.assertEqual(Visitor.objects.get().region, 'Kenya')
+
+	@override_settings(GEOIP_DATABASE_PATH='/tmp/GeoLite2-Country.mmdb')
+	@patch('core.geoip._get_reader')
+	def test_enriches_an_unknown_visitor_when_they_return(self, reader_factory):
+		from django.test import Client
+		from django.utils.crypto import salted_hmac
+		from .models import Visitor
+
+		reader = Mock()
+		reader.country.return_value.country.name = 'Uganda'
+		reader_factory.return_value = reader
+		Visitor.objects.create(
+			ip_hash=salted_hmac('muko-visitor-ip', '8.8.4.4').hexdigest(),
+			last_seen=timezone.now() - timedelta(hours=1),
+			region='Unknown',
+		)
+
+		Client().get(
+			reverse('home'),
+			REMOTE_ADDR='8.8.4.4',
+			HTTP_USER_AGENT='Portfolio Browser',
+		)
+
+		self.assertEqual(Visitor.objects.get().region, 'Uganda')
+
+
+class DiscoverabilityAndSecurityTests(TestCase):
+	def test_public_pages_include_seo_metadata_and_security_headers(self):
+		response = self.client.get(reverse('home'))
+
+		self.assertContains(response, 'name="description"')
+		self.assertContains(response, 'rel="canonical"')
+		self.assertIn('Content-Security-Policy', response)
+		self.assertIn('Permissions-Policy', response)
+		self.assertIn("script-src 'self' 'nonce-", response['Content-Security-Policy'])
+
+	def test_robots_and_sitemap_are_available(self):
+		robots = self.client.get(reverse('robots_txt'))
+		sitemap = self.client.get(reverse('sitemap'))
+
+		self.assertEqual(robots.status_code, 200)
+		self.assertContains(robots, 'Sitemap:')
+		self.assertEqual(sitemap.status_code, 200)
+		self.assertContains(sitemap, '<urlset', html=False)
+
+
 
 class PortfolioCvTests(TestCase):
 	def test_cv_button_is_hidden_until_pdf_is_configured(self):
@@ -259,6 +401,7 @@ class PortfolioCvTests(TestCase):
 class SiteContentSettingsTests(TestCase):
 	def test_admin_managed_copy_renders_on_homepage(self):
 		from .models import SiteContentSettings
+		SiteContentSettings.objects.all().delete()
 		SiteContentSettings.objects.create(
 			hero_eyebrow='Hello from admin',
 			hero_description='Custom hero description.',
@@ -279,8 +422,53 @@ class SiteContentSettingsTests(TestCase):
 
 		response = self.client.get(reverse('home'))
 
+
 		self.assertContains(response, 'Hello from admin')
 		self.assertContains(response, 'Custom hero description.')
 		self.assertContains(response, 'Custom services introduction.')
 		self.assertContains(response, 'Custom contact introduction.')
 		self.assertContains(response, 'Custom footer text.')
+
+	def test_dynamic_services_render_on_homepage(self):
+		from .models import SiteContentSettings, Service
+		Service.objects.all().delete()
+		SiteContentSettings.objects.all().delete()
+
+		site_content = SiteContentSettings.objects.create(
+			services_eyebrow='Dynamic Capabilities',
+			services_intro='See our dynamic list of services.'
+		)
+
+		service = Service.objects.create(
+			site_content=site_content,
+			title='Hyper Scaler Dev',
+			slug='hyperscaler',
+			icon='cloud-lightning',
+			short_description='We build hyperscale software.',
+			description='A detailed overview of hyperscale development.',
+			includes='Feature 1\nFeature 2',
+			outcomes='Outcome 1\nOutcome 2',
+			tags='Docker, Kubernetes',
+			column_span=3,
+			show_bg_icon=True,
+			display_order=5
+		)
+
+		# Test properties
+		self.assertEqual(service.includes_list, ['Feature 1', 'Feature 2'])
+		self.assertEqual(service.outcomes_list, ['Outcome 1', 'Outcome 2'])
+		self.assertEqual(service.tags_list, ['Docker', 'Kubernetes'])
+
+		response = self.client.get(reverse('home'))
+		self.assertEqual(response.status_code, 200)
+		self.assertContains(response, 'Hyper Scaler Dev')
+		self.assertContains(response, 'We build hyperscale software.')
+		self.assertContains(response, 'Docker')
+		self.assertContains(response, 'Kubernetes')
+		# Check that JS serviceDetails object is populated
+		self.assertContains(response, '"hyperscaler"')
+		self.assertContains(response, 'Hyper Scaler Dev')
+		self.assertContains(response, 'cloud-lightning')
+		# The JSON script must contain an object, not a JSON string.  The modal
+		# click handler indexes this value by service slug in the browser.
+		self.assertNotContains(response, '&quot;{')

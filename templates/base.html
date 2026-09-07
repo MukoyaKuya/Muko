@@ -541,37 +541,38 @@
 
     <!-- ── Global Image Lightbox ──────────────────────────────────── -->
     <div id="muko-lightbox" aria-modal="true" role="dialog" aria-label="Image viewer"
-         style="display:none;position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,0.95);backdrop-filter:blur(6px);">
+         style="display:none;position:fixed;inset:0;z-index:99990;background:rgba(0,0,0,0.94);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);opacity:0;transition:opacity 0.22s ease-out;">
         <!-- Close -->
-        <button id="lb-close" aria-label="Close"
-                style="position:absolute;top:1.25rem;right:1.5rem;color:#fff;background:none;border:none;cursor:pointer;z-index:9001;opacity:.7;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
-                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <button id="lb-close" type="button" aria-label="Close image viewer"
+                style="position:absolute;top:1.25rem;right:1.5rem;color:#fff;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.16);border-radius:50%;width:44px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:99995;transition:all 0.2s ease;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
             </svg>
         </button>
         <!-- Prev -->
-        <button id="lb-prev" aria-label="Previous image"
-                style="position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:#fff;background:rgba(255,255,255,.08);border:none;border-radius:50%;width:44px;height:44px;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+        <button id="lb-prev" type="button" aria-label="Previous image"
+                style="position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:#fff;background:rgba(255,255,255,0.09);border:1px solid rgba(255,255,255,0.16);border-radius:50%;width:46px;height:46px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:99995;transition:all 0.2s ease;">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                 stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="15 18 9 12 15 6"/>
             </svg>
         </button>
-        <!-- Image container -->
-        <div style="display:flex;align-items:center;justify-content:center;height:100%;padding:3rem 5rem;">
-            <img id="lb-img" src="" alt="" style="max-width:100%;max-height:100%;object-fit:contain;border-radius:8px;box-shadow:0 0 80px rgba(0,0,0,.8);">
+        <!-- Image stage -->
+        <div id="lb-stage" style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;padding:1.25rem;box-sizing:border-box;">
+            <img id="lb-img" src="" alt="Project Preview"
+                 style="max-width:min(94vw, 1360px);max-height:86vh;object-fit:contain;border-radius:12px;box-shadow:0 25px 80px rgba(0,0,0,0.85);transform:scale(0.92);opacity:0;transition:transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.22s ease-out;">
         </div>
         <!-- Next -->
-        <button id="lb-next" aria-label="Next image"
-                style="position:absolute;right:1rem;top:50%;transform:translateY(-50%);color:#fff;background:rgba(255,255,255,.08);border:none;border-radius:50%;width:44px;height:44px;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+        <button id="lb-next" type="button" aria-label="Next image"
+                style="position:absolute;right:1rem;top:50%;transform:translateY(-50%);color:#fff;background:rgba(255,255,255,0.09);border:1px solid rgba(255,255,255,0.16);border-radius:50%;width:46px;height:46px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:99995;transition:all 0.2s ease;">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                 stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="9 18 15 12 9 6"/>
             </svg>
         </button>
         <!-- Counter -->
-        <div id="lb-counter" style="position:absolute;bottom:1.25rem;left:50%;transform:translateX(-50%);color:rgba(255,255,255,.5);font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;"></div>
+        <div id="lb-counter" style="position:absolute;bottom:1.5rem;left:50%;transform:translateX(-50%);color:rgba(255,255,255,0.7);background:rgba(0,0,0,0.55);border:1px solid rgba(255,255,255,0.12);padding:4px 14px;border-radius:999px;font-size:0.75rem;letter-spacing:0.18em;text-transform:uppercase;pointer-events:none;z-index:99995;"></div>
     </div>
 
     <style>
@@ -584,60 +585,172 @@
         .work-item:hover .project-thumb {
             animation: preview-scroll 4s linear forwards;
         }
+        #lb-close:hover {
+            color: #FF3131 !important;
+            border-color: #FF3131 !important;
+            background: rgba(255, 49, 49, 0.15) !important;
+            transform: scale(1.06);
+        }
+        #lb-prev:hover, #lb-next:hover {
+            color: #FF3131 !important;
+            border-color: #FF3131 !important;
+            background: rgba(255, 49, 49, 0.15) !important;
+            transform: translateY(-50%) scale(1.08);
+        }
     </style>
 
     <script nonce="{{ request.csp_nonce }}">
     (function () {
         let lbImages = [], lbIndex = 0;
-        const lb      = document.getElementById('muko-lightbox');
-        const lbImg   = document.getElementById('lb-img');
-        const lbClose = document.getElementById('lb-close');
-        const lbPrev  = document.getElementById('lb-prev');
-        const lbNext  = document.getElementById('lb-next');
+        const lb        = document.getElementById('muko-lightbox');
+        const lbImg     = document.getElementById('lb-img');
+        const lbClose   = document.getElementById('lb-close');
+        const lbPrev    = document.getElementById('lb-prev');
+        const lbNext    = document.getElementById('lb-next');
         const lbCounter = document.getElementById('lb-counter');
 
         function showLightbox(images, index) {
-            lbImages = images;
-            lbIndex  = index;
-            render();
+            if (!images || !images.length) return;
+            lbImages = Array.isArray(images) ? images : [images];
+            lbIndex  = Math.max(0, Math.min(index || 0, lbImages.length - 1));
+            render(true);
             lb.style.display = 'block';
             document.body.style.overflow = 'hidden';
+            requestAnimationFrame(() => {
+                lb.style.opacity = '1';
+                lbImg.style.opacity = '1';
+                lbImg.style.transform = 'scale(1)';
+            });
         }
 
-        function render() {
-            lbImg.src = lbImages[lbIndex];
-            lbCounter.textContent = lbImages.length > 1 ? (lbIndex + 1) + ' / ' + lbImages.length : '';
-            lbPrev.style.display = lbImages.length > 1 ? 'flex' : 'none';
-            lbNext.style.display = lbImages.length > 1 ? 'flex' : 'none';
+        function render(isInitial) {
+            if (!isInitial) {
+                lbImg.style.opacity = '0.35';
+                lbImg.style.transform = 'scale(0.96)';
+            }
+            const targetSrc = lbImages[lbIndex];
+            const preloader = new Image();
+            preloader.onload = function () {
+                lbImg.src = targetSrc;
+                requestAnimationFrame(() => {
+                    lbImg.style.opacity = '1';
+                    lbImg.style.transform = 'scale(1)';
+                });
+            };
+            preloader.src = targetSrc;
+            lbImg.src = targetSrc;
+
+            if (lbCounter) {
+                lbCounter.textContent = lbImages.length > 1 ? (lbIndex + 1) + ' / ' + lbImages.length : '';
+                lbCounter.style.display = lbImages.length > 1 ? 'block' : 'none';
+            }
+            if (lbPrev) lbPrev.style.display = lbImages.length > 1 ? 'flex' : 'none';
+            if (lbNext) lbNext.style.display = lbImages.length > 1 ? 'flex' : 'none';
         }
 
         function closeLightbox() {
-            lb.style.display = 'none';
-            document.body.style.overflow = '';
-            lbImg.src = '';
+            lb.style.opacity = '0';
+            lbImg.style.opacity = '0';
+            lbImg.style.transform = 'scale(0.92)';
+            setTimeout(() => {
+                lb.style.display = 'none';
+                document.body.style.overflow = '';
+                lbImg.src = '';
+            }, 220);
         }
 
-        lbClose.addEventListener('click', closeLightbox);
-        lb.addEventListener('click', function (e) { if (e.target === lb) closeLightbox(); });
-        lbPrev.addEventListener('click', function () {
-            lbIndex = (lbIndex - 1 + lbImages.length) % lbImages.length;
-            render();
-        });
-        lbNext.addEventListener('click', function () {
-            lbIndex = (lbIndex + 1) % lbImages.length;
-            render();
-        });
+        if (lbClose) lbClose.addEventListener('click', closeLightbox);
+        if (lb) {
+            lb.addEventListener('click', function (e) {
+                if (e.target === lb || e.target.id === 'lb-stage') closeLightbox();
+            });
+        }
+        if (lbPrev) {
+            lbPrev.addEventListener('click', function (e) {
+                e.stopPropagation();
+                lbIndex = (lbIndex - 1 + lbImages.length) % lbImages.length;
+                render(false);
+            });
+        }
+        if (lbNext) {
+            lbNext.addEventListener('click', function (e) {
+                e.stopPropagation();
+                lbIndex = (lbIndex + 1) % lbImages.length;
+                render(false);
+            });
+        }
         document.addEventListener('keydown', function (e) {
-            if (lb.style.display === 'none') return;
+            if (!lb || lb.style.display === 'none') return;
             if (e.key === 'Escape')     closeLightbox();
-            if (e.key === 'ArrowLeft')  { lbIndex = (lbIndex - 1 + lbImages.length) % lbImages.length; render(); }
-            if (e.key === 'ArrowRight') { lbIndex = (lbIndex + 1) % lbImages.length; render(); }
+            if (e.key === 'ArrowLeft')  { lbIndex = (lbIndex - 1 + lbImages.length) % lbImages.length; render(false); }
+            if (e.key === 'ArrowRight') { lbIndex = (lbIndex + 1) % lbImages.length; render(false); }
         });
 
-        // Global opener used by project cards
+        // Touch swipe support
+        let touchStartX = 0, touchStartY = 0;
+        if (lb) {
+            lb.addEventListener('touchstart', function (e) {
+                if (e.touches && e.touches[0]) {
+                    touchStartX = e.touches[0].clientX;
+                    touchStartY = e.touches[0].clientY;
+                }
+            }, { passive: true });
+            lb.addEventListener('touchend', function (e) {
+                if (!e.changedTouches || !e.changedTouches[0]) return;
+                const diffX = e.changedTouches[0].clientX - touchStartX;
+                const diffY = e.changedTouches[0].clientY - touchStartY;
+                if (Math.abs(diffX) > 45 && Math.abs(diffX) > Math.abs(diffY)) {
+                    if (diffX > 0) {
+                        lbIndex = (lbIndex - 1 + lbImages.length) % lbImages.length;
+                    } else {
+                        lbIndex = (lbIndex + 1) % lbImages.length;
+                    }
+                    render(false);
+                }
+            }, { passive: true });
+        }
+
+        // Global opener
         window.openProjectLightbox = function (images, startIndex) {
             showLightbox(images, startIndex || 0);
         };
+
+        // CSP-compliant delegated click & keydown listener for all zoom triggers
+        document.addEventListener('click', function (e) {
+            const trigger = e.target.closest('[data-lightbox-trigger]');
+            if (!trigger) return;
+            e.preventDefault();
+            const scriptId = trigger.getAttribute('data-lightbox-script');
+            const index = parseInt(trigger.getAttribute('data-lightbox-index') || '0', 10);
+            if (scriptId) {
+                const scriptEl = document.getElementById(scriptId);
+                if (scriptEl) {
+                    try {
+                        const images = JSON.parse(scriptEl.textContent);
+                        showLightbox(images, index);
+                    } catch (err) {
+                        console.error('Failed to parse lightbox images JSON:', err);
+                    }
+                }
+            } else if (trigger.getAttribute('data-lightbox-images')) {
+                try {
+                    const images = JSON.parse(trigger.getAttribute('data-lightbox-images'));
+                    showLightbox(images, index);
+                } catch (err) {
+                    console.error('Failed to parse lightbox images attribute:', err);
+                }
+            }
+        });
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                const trigger = e.target.closest('[data-lightbox-trigger]');
+                if (trigger && trigger.tagName !== 'BUTTON' && trigger.tagName !== 'A') {
+                    e.preventDefault();
+                    trigger.click();
+                }
+            }
+        });
     })();
     </script>
 </body>

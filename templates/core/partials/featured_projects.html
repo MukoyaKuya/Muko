@@ -15,8 +15,13 @@
         <article class="work-item group grid overflow-hidden rounded-[1.75rem] border border-white/10 bg-white/[0.035] transition-colors hover:border-white/20 lg:grid-cols-[minmax(0,1.35fr)_minmax(20rem,0.65fr)]">
             <div class="relative min-h-[17rem] overflow-hidden bg-white/5 sm:min-h-[22rem] lg:min-h-[31rem] {% if forloop.counter|divisibleby:2 %}lg:order-2{% endif %}">
                 {% if all_images %}
-                {{ all_images|json_script:forloop.counter }}
-                <button type="button" class="absolute inset-0 z-10 cursor-zoom-in text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-3px] focus-visible:outline-muko-red" aria-label="View {{ project.title }} screenshots" onclick="openProjectLightbox(JSON.parse(document.getElementById('{{ forloop.counter }}').textContent), 0)">
+                {{ all_images|json_script:project.slug }}
+                <button type="button"
+                        data-lightbox-trigger
+                        data-lightbox-script="{{ project.slug }}"
+                        data-lightbox-index="0"
+                        class="absolute inset-0 z-10 cursor-zoom-in text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-3px] focus-visible:outline-muko-red"
+                        aria-label="View {{ project.title }} screenshots">
                     <img src="{{ all_images.0 }}" alt="{{ project.title }} project preview" class="project-thumb h-full w-full object-cover grayscale transition-[filter,transform] duration-700 group-hover:scale-[1.015] group-hover:grayscale-0">
                     <span class="absolute bottom-4 left-4 flex items-center gap-2 rounded-full border border-white/10 bg-black/75 px-3 py-2 text-[9px] uppercase tracking-[0.2em] text-white/80 backdrop-blur-sm md:bottom-6 md:left-6"><i data-lucide="expand" class="h-3.5 w-3.5"></i>{% if all_images|length > 1 %}{{ all_images|length }} images{% else %}Full view{% endif %}</span>
                 </button>

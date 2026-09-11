@@ -2,7 +2,7 @@
 
 Muko is a small Django portfolio site with a server-rendered landing page, WhatsApp-first contact flow, admin-managed content, and environment-backed runtime settings.
  
-## Stack 
+## Stack
 
 - Python  
 - Django 6.0.8  

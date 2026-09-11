@@ -11,7 +11,7 @@ Muko is a small Django portfolio site with a server-rendered landing page, Whats
 - Locally compiled Tailwind CSS and pinned browser libraries 
  
 ## Local setup 
-  
+   
 1. Install Python 3.13 from [python.org](https://www.python.org/downloads/) and ensure the Python Launcher (`py`) is available.
 2. Create a clean virtual environment and install dependencies:
 

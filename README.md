@@ -8,7 +8,7 @@ Muko is a small Django portfolio site with a server-rendered landing page, Whats
 - Django 6.0.8
 - SQLite for local development
 - HTMX on the contact form
-- Locally compiled Tailwind CSS and pinned browser libraries
+- Locally compiled Tailwind CSS and pinned browser libraries 
  
 ## Local setup 
   

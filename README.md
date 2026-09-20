@@ -4,7 +4,7 @@ Muko is a small Django portfolio site with a server-rendered landing page, Whats
    
 ## Stack 
    
-- Python  
+- Python   
 - Django 6.0.8  
 - SQLite for local development
 - HTMX on the contact form
